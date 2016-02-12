@@ -1,7 +1,7 @@
 # makefile to automatize simple operations
 
 server:
-	http-server -p 8000 -c-1 .
+	http-server -c-1 .
 
 deploy:
 	# assume there is something to commit

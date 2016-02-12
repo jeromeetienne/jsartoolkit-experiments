@@ -1,2 +1,2 @@
 # jsartoolkit-example
-Example of jsartoolkit and three.js
+Example of [jsartoolkit](https://github.com/artoolkit/jsartoolkit5) and [three.js](http://threejs.org)
