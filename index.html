@@ -25,6 +25,7 @@
 	<a href='javascript:void(0)' onclick='switchSource("webcam")' style='color: grey'>webcam</a>
 	<br/>
 	(put this <a href='data/Hiro%20pattern%20with%20border.pdf' target='_blank'>hiro image</a> in front of the camera)
+	- on android, click to start webcam
 	<br/>
 </div>
 <body><script>
@@ -37,7 +38,7 @@
 	function initSourceVideo(onReady){
 		var srcElement = document.createElement('video');
 		document.body.appendChild(srcElement)
-		srcElement.src = 'videos/output_4.ogg';
+		srcElement.src = 'videos/output_4.mp4';
 		srcElement.autoplay = true;
 		srcElement.webkitPlaysinline = true;
 		srcElement.controls = false;
@@ -85,7 +86,10 @@
 		}, function success(stream) {
 			console.log('success', stream);
 			srcElement.src = window.URL.createObjectURL(stream);
-			srcElement.onclick = function() { srcElement.play(); };
+			// to start the video, when it is possible to start it only on userevent. like in android
+			document.body.addEventListener('click', function(){
+				srcElement.play();
+			})
 			srcElement.play();
 		
 			var cameraParameters = new ARCameraParam('data/camera_para.dat', function() {
@@ -98,6 +102,7 @@
 			});
 		}, function(error) {
 			console.log("Can't access user media", error);
+			alert("Can't access user media :()");
 		});
 		
 		return srcElement
@@ -203,6 +208,7 @@
 
 	var arController = null;
 	function onSourceImageReady(width, height, onCompleted){
+		console.log(arguments)
 		var cameraParameters = new ARCameraParam('data/camera_para.dat', function() {
 		
 			arController = new ARController(width, height, cameraParameters);
