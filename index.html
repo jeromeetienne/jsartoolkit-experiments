@@ -92,14 +92,12 @@
 			})
 			srcElement.play();
 		
-			var cameraParameters = new ARCameraParam('data/camera_para.dat', function() {
-				// wait until the video stream is ready
-				var interval = setInterval(function() {
-					if (!srcElement.videoWidth)	return;
-					onReady()
-					clearInterval(interval)
-				}, 1000/100);
-			});
+			// wait until the video stream is ready
+			var interval = setInterval(function() {
+				if (!srcElement.videoWidth)	return;
+				onReady()
+				clearInterval(interval)
+			}, 1000/100);
 		}, function(error) {
 			console.log("Can't access user media", error);
 			alert("Can't access user media :()");
