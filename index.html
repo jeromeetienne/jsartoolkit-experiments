@@ -231,6 +231,7 @@
 
 	// create the marker Root
 	var markerRoot = new THREE.Object3D();
+	markerRoot.name = 'Marker Root'
 	markerRoot.userData.markerMatrix = new Float64Array(12);
 	markerRoot.matrixAutoUpdate = false;
 	markerRoot.visible = false
