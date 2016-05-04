@@ -231,7 +231,7 @@
 
 	// Create a camera and a marker root object for your Three.js scene.
 	// var camera = new THREE.Camera();
-	var camera = new THREE.PerspectiveCamera( 35, renderer.domElement.width / renderer.domElement.height, 0.01, 100000);
+	var camera = new THREE.PerspectiveCamera( 45, renderer.domElement.width / renderer.domElement.height, 0.01, 100000);
 	// camera.matrixAutoUpdate = false;
 	scene.add(camera);
 
@@ -336,13 +336,14 @@
 
 
 		// camera.position.set(0,0,4)
-		camera.position.x = -position.x/5
+		camera.position.x = -position.x/4
 		camera.position.y = -position.y/2
-		camera.position.z =  position.z
-		camera.position.setLength(10)
+		//camera.position.z =  position.z
+		camera.position.z =  4
+		// camera.position.setLength(10)
 		
 		var target = new THREE.Vector3;
-		target.copy(camera.position).negate()
+		target.copy(camera.position).negate().multiplyScalar(1/2)
 		// target = new THREE.Vector3(0,0,-1)
 		camera.lookAt(target)
 		
@@ -372,7 +373,7 @@
 	// 	torus.rotation.x += 0.1
 	// })
 	;(function(){
-  		var width = 20
+  		var width = 10
 		// var texture = new THREE.TextureLoader().load( 'images/armchair.jpg' )
 		var texture = new THREE.TextureLoader().load( 'textures/targettexture.png' );
 
@@ -416,9 +417,7 @@
 		var geometry = new THREE.BoxGeometry(width,width,width*4);
 		var material = new THREE.MeshBasicMaterial({
 			map: texture,
-			// color: 0x01BE00,
-			transparent: true,
-			opacity: 0.3,
+			color: 0x01BE00,
 			side: THREE.BackSide
 		});
 		var skybox = new THREE.Mesh(geometry, material);
