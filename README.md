@@ -12,3 +12,5 @@ It shows a basic usage of jsartoolkit with three.js
 * [index-hatsune.html](http://jeromeetienne.github.io/jsartoolkit-example/index-hatsune.html#video)
 \[[view source](https://github.com/jeromeetienne/jsartoolkit-example/blob/master/index-hatsune.html)\] :
 It display [hatsune miku example from three.js](http://threejs.org/examples/webgl_loader_mmd.html)
+* [index-headtracking.html](http://jeromeetienne.github.io/jsartoolkit-example/index-headtracking.html#video)
+It is a experiment about head tracking. Very experimetal :)

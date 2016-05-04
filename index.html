@@ -246,11 +246,11 @@
 		// update markerRoot with the found markers
 		var markerNum = arController.getMarkerNum();
 		if (markerNum > 0) {
-			if( markerRoot.visible === false ) {
+			// if( markerRoot.visible === false ) {
 				arController.getTransMatSquare(0 /* Marker index */, 1 /* Marker width */, markerRoot.userData.markerMatrix);
-			} else {
-				arController.getTransMatSquareCont(0, 1, markerRoot.userData.markerMatrix, markerRoot.userData.markerMatrix);
-			}
+			// } else {
+				// arController.getTransMatSquareCont(0, 1, markerRoot.userData.markerMatrix, markerRoot.userData.markerMatrix);
+			// }
 			arController.transMatToGLMat(markerRoot.userData.markerMatrix, markerRoot.matrix.elements);
 		}
 
@@ -294,8 +294,7 @@
 
 	// render the scene
 
-	var clock = new THREE.Clock();
-	onRenderFcts.push(function(delta){
+	onRenderFcts.push(function(){
 		renderer.render( scene, camera );
 	})
 
