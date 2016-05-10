@@ -330,22 +330,46 @@
 		var quaternion = new THREE.Quaternion
 		var scale = new THREE.Vector3
 		matrix.decompose(position, quaternion, scale)
-		// console.log(position.x)
+		// console.log(position.length())
 		
 		// camera.position.copy(position).multiplyScalar(0.5)
 
 
 		// camera.position.set(0,0,4)
-		camera.position.x = -position.x/4
-		camera.position.y = -position.y/2
-		//camera.position.z =  position.z
+		camera.position.x = -position.x
+		camera.position.y = -position.y
+		camera.position.z =  position.z
 		camera.position.z =  4
 		// camera.position.setLength(10)
+		camera.lookAt( new THREE.Vector3(0,0,-2) )
+
+		camera.updateMatrix()
+		camera.updateMatrixWorld()
+		camera.updateProjectionMatrix()
+	
+		// get the center of the physical screen
+		var screenPosition = new THREE.Vector3(0,0,0)
+		var screenTopPosition = screenPosition.clone().add(new THREE.Vector3(0, 1 ,0))
 		
-		var target = new THREE.Vector3;
-		target.copy(camera.position).negate().multiplyScalar(1/2)
-		// target = new THREE.Vector3(0,0,-1)
-		camera.lookAt(target)
+		// go in markerRoot space
+		markerRoot.worldToLocal(screenPosition)
+		markerRoot.worldToLocal(screenTopPosition)
+
+		console.log(screenPosition.z);
+		// console.log(screenPosition.x, screenPosition.y);
+		// console.log(camera.position.z);
+		// console.log(camera.position.y.toFixed(10),screenTopPosition.y.toFixed(10));
+		
+		// var fovRadian = Math.atan2(screenTopPosition.y, screenTopPosition.x)
+		// var fovDegree = THREE.Math.radToDeg(fovRadian)
+		// console.log('fovDegree', fovDegree)
+		// camera.fov = fovDegree
+		// camera.updateProjectionMatrix()
+
+		// console.log('screenPosition', screenPosition.length())
+		// camera.fov = 90; 
+		// camera.updateProjectionMatrix()
+
 		
 		// var euler = new THREE.Euler
 		// euler.setFromQuaternion(quaternion)
