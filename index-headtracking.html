@@ -231,7 +231,7 @@
 
 	// Create a camera and a marker root object for your Three.js scene.
 	// var camera = new THREE.Camera();
-	var camera = new THREE.PerspectiveCamera( 45, renderer.domElement.width / renderer.domElement.height, 0.01, 100000);
+	var camera = new THREE.PerspectiveCamera( 75, renderer.domElement.width / renderer.domElement.height, 0.01, 100000);
 	// camera.matrixAutoUpdate = false;
 	scene.add(camera);
 
@@ -359,7 +359,7 @@
 		// console.log(screenPosition.x, screenPosition.y);
 		// console.log(camera.position.z);
 		// console.log(camera.position.y.toFixed(10),screenTopPosition.y.toFixed(10));
-		
+
 		// var fovRadian = Math.atan2(screenTopPosition.y, screenTopPosition.x)
 		// var fovDegree = THREE.Math.radToDeg(fovRadian)
 		// console.log('fovDegree', fovDegree)
@@ -370,7 +370,12 @@
 		// camera.fov = 90; 
 		// camera.updateProjectionMatrix()
 
-		
+
+		// var target = new THREE.Vector3;
+		// target.copy(camera.position).negate().multiplyScalar(1/2)
+		// target = new THREE.Vector3(0,0,-1)
+		// camera.lookAt(target)
+
 		// var euler = new THREE.Euler
 		// euler.setFromQuaternion(quaternion)
 		// console.log(euler)
