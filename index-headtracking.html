@@ -231,7 +231,7 @@
 
 	// Create a camera and a marker root object for your Three.js scene.
 	// var camera = new THREE.Camera();
-	var camera = new THREE.PerspectiveCamera( 45, renderer.domElement.width / renderer.domElement.height, 0.01, 100000);
+	var camera = new THREE.PerspectiveCamera( 75, renderer.domElement.width / renderer.domElement.height, 0.01, 100000);
 	// camera.matrixAutoUpdate = false;
 	scene.add(camera);
 
@@ -336,16 +336,16 @@
 
 
 		// camera.position.set(0,0,4)
-		camera.position.x = -position.x/4
+		camera.position.x = -position.x/2
 		camera.position.y = -position.y/2
-		//camera.position.z =  position.z
-		camera.position.z =  4
+		camera.position.z =  position.z
+		// camera.position.z =  4
 		// camera.position.setLength(10)
 		
 		var target = new THREE.Vector3;
 		target.copy(camera.position).negate().multiplyScalar(1/2)
 		// target = new THREE.Vector3(0,0,-1)
-		camera.lookAt(target)
+		// camera.lookAt(target)
 		
 		// var euler = new THREE.Euler
 		// euler.setFromQuaternion(quaternion)
