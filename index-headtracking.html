@@ -293,32 +293,6 @@
 		// }
 	})
 	
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object in the scene
-	//////////////////////////////////////////////////////////////////////////////////
-
-	// add a torus knot	
-	var geometry	= new THREE.CubeGeometry(1,1,1);
-	var material	= new THREE.MeshNormalMaterial({
-		transparent : true,
-		opacity: 0.5,
-		side: THREE.DoubleSide
-	}); 
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.z	= geometry.parameters.height/2
-	markerRoot.add( mesh );
-	
-	var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
-	var material	= new THREE.MeshNormalMaterial(); 
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.z	= 0.5
-	markerRoot.add( mesh );
-	
-	onRenderFcts.push(function(){
-		mesh.rotation.x += 0.1
-	})
-	
 	//////////////////////////////////////////////////////////////////////////////
 	//              Code Separator
 	//////////////////////////////////////////////////////////////////////////////
@@ -336,12 +310,13 @@
 
 
 		// camera.position.set(0,0,4)
-		camera.position.x = -position.x
-		camera.position.y = -position.y
-		camera.position.z =  position.z
-		camera.position.z =  4
+		camera.position.x = -position.x/6
+		camera.position.y = -position.y/4
+		// camera.position.z =  position.z
+		// camera.position.z =  4
+		// camera.position.set(0,0,position.z)
 		// camera.position.setLength(10)
-		camera.lookAt( new THREE.Vector3(0,0,-2) )
+		// camera.lookAt( new THREE.Vector3(0,0,-2) )
 
 		camera.updateMatrix()
 		camera.updateMatrixWorld()
@@ -349,22 +324,27 @@
 	
 		// get the center of the physical screen
 		var screenPosition = new THREE.Vector3(0,0,0)
-		var screenTopPosition = screenPosition.clone().add(new THREE.Vector3(0, 1 ,0))
+		var screenPhysicalHeight = 4
+		var screenTopPosition = screenPosition.clone().add(new THREE.Vector3(0, screenPhysicalHeight, 0))
 		
 		// go in markerRoot space
-		markerRoot.worldToLocal(screenPosition)
-		markerRoot.worldToLocal(screenTopPosition)
+		// markerRoot.worldToLocal(screenPosition)
+		// markerRoot.worldToLocal(screenTopPosition)
+		
+		screenPosition.z = position.z
+		screenTopPosition.z = position.z
 
-		console.log(screenPosition.z);
+		// console.log(screenPosition.z);
+
 		// console.log(screenPosition.x, screenPosition.y);
 		// console.log(camera.position.z);
 		// console.log(camera.position.y.toFixed(10),screenTopPosition.y.toFixed(10));
 
-		// var fovRadian = Math.atan2(screenTopPosition.y, screenTopPosition.x)
-		// var fovDegree = THREE.Math.radToDeg(fovRadian)
-		// console.log('fovDegree', fovDegree)
-		// camera.fov = fovDegree
-		// camera.updateProjectionMatrix()
+		var fovRadian = Math.atan2(screenTopPosition.z, screenTopPosition.y/2)
+		var fovDegree = THREE.Math.radToDeg(fovRadian)
+		console.log('fovDegree', fovDegree)
+		camera.fov = fovDegree
+		camera.updateProjectionMatrix()
 
 		// console.log('screenPosition', screenPosition.length())
 		// camera.fov = 90; 
@@ -384,38 +364,23 @@
 	
 
 	//////////////////////////////////////////////////////////////////////////////
-	//              Code Separator
+	//              Put random arrows
 	//////////////////////////////////////////////////////////////////////////////
 	
-
-	// // add a torus knot	
-	// var geometry	= new THREE.TorusGeometry(1, 0.3);
-	// var geometry	= new THREE.CubeGeometry(1,1,1);
-	// var material	= new THREE.MeshNormalMaterial({
-	// 	transparent : true,
-	// 	opacity: 0.5,
-	// 	side: THREE.DoubleSide
-	// }); 
-	// var torus	= new THREE.Mesh( geometry, material );
-	// scene.add( torus );
-	// onRenderFcts.push(function(){
-	// 	torus.rotation.x += 0.1
-	// })
 	;(function(){
   		var width = 10
 		// var texture = new THREE.TextureLoader().load( 'images/armchair.jpg' )
 		var texture = new THREE.TextureLoader().load( 'textures/targettexture.png' );
-
 		for( var i = 0; i < 20; i++ ){
 			var direction = new THREE.Vector3(0,0,1)
 			var origin = new THREE.Vector3(0,0,0)
 			var length = 1;
 			var color = new THREE.Color()
-			color.setHex(Math.random() * 0xffffff)
-			origin.x = THREE.Math.randFloatSpread(4)
-			origin.y = THREE.Math.randFloatSpread(4)
+			// color.setHex(Math.random() * 0xffffff)
+			origin.x = THREE.Math.randFloatSpread(2)
+			origin.y = THREE.Math.randFloatSpread(2)
 			origin.z = -5
-			length = 0.1 + width/2 + THREE.Math.randFloatSpread(width)
+			length = 4 + THREE.Math.randFloatSpread(8)
 			// length = 3
 
 			var mesh = new THREE.ArrowHelper(direction, origin, length, color)
@@ -434,6 +399,10 @@
 			circle.lookAt(new THREE.Vector3(0,1,0))
 		}
 	})()
+	//////////////////////////////////////////////////////////////////////////////
+	//              Put ground + skybox
+	//////////////////////////////////////////////////////////////////////////////
+	
 	;(function(){
   		var width = 4
 
@@ -442,7 +411,7 @@
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set(width*4, width*4);
-		texture.anisotropy = 64;
+		texture.anisotropy = renderer.getMaxAnisotropy()
 		var geometry = new THREE.BoxGeometry(width,width,width*4);
 		var material = new THREE.MeshBasicMaterial({
 			map: texture,
@@ -450,7 +419,14 @@
 			side: THREE.BackSide
 		});
 		var skybox = new THREE.Mesh(geometry, material);
-		scene.add(skybox);	
+		scene.add(skybox);
+
+		function onWindowResize(){
+			var aspect = window.innerWidth / window.innerHeight
+			skybox.scale.x = aspect			
+		}
+		window.addEventListener('resize', onWindowResize)
+		onWindowResize()
 	})()
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
