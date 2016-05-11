@@ -379,9 +379,9 @@
 			// color.setHex(Math.random() * 0xffffff)
 			origin.x = THREE.Math.randFloatSpread(2)
 			origin.y = THREE.Math.randFloatSpread(2)
-			origin.z = -5
+			origin.z = -width/2
 			length = 4 + THREE.Math.randFloatSpread(8)
-			// length = 3
+
 
 			var mesh = new THREE.ArrowHelper(direction, origin, length, color)
 			mesh.cone.visible = false
