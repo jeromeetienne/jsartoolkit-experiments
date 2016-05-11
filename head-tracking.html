@@ -375,7 +375,7 @@
 			var direction = new THREE.Vector3(0,0,1)
 			var origin = new THREE.Vector3(0,0,0)
 			var length = 1;
-			var color = new THREE.Color()
+			// var color = new THREE.Color()
 			// color.setHex(Math.random() * 0xffffff)
 			origin.x = THREE.Math.randFloatSpread(2)
 			origin.y = THREE.Math.randFloatSpread(2)
@@ -383,7 +383,7 @@
 			length = 4 + THREE.Math.randFloatSpread(8)
 
 
-			var mesh = new THREE.ArrowHelper(direction, origin, length, color)
+			var mesh = new THREE.ArrowHelper(direction, origin, length)
 			mesh.cone.visible = false
 			scene.add(mesh)		
 			
