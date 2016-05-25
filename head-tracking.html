@@ -352,22 +352,23 @@
   		var depth = 16
 
  		function createArrow(origin, length){
-			var direction = new THREE.Vector3(0,0,1)
-			
-			var cylinder = new THREE.Mesh( new THREE.CylinderGeometry(1,1,1,20,1,false), new THREE.MeshBasicMaterial( { color : 0xeeeeee} ) );
+			var geometry = new THREE.CylinderGeometry(0.01,0.01,length)
+			var material = new THREE.MeshBasicMaterial( { color : 0xeeeeee} )
+			var mesh = new THREE.Mesh( geometry, material );
+			mesh.rotateX(Math.PI/2)
+			mesh.position.copy(origin)
+			mesh.position.z += length/2
 
-			var mesh = new THREE.ArrowHelper(direction, origin, length)
-			mesh.cone.visible = false
-			
 			var geometry = new THREE.CircleGeometry(0.3, 32)
 			var material = new THREE.MeshBasicMaterial({
 				map: texture,
 				side: THREE.DoubleSide
 			});
 			var circle = new THREE.Mesh(geometry, material)
-			mesh.add(circle)
-			circle.translateY(length)
+			circle.translateY(length/2)
 			circle.lookAt(new THREE.Vector3(0,1,0))
+
+			mesh.add(circle)
 
  			return mesh
  		}
