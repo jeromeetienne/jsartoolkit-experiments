@@ -230,9 +230,7 @@
 	//////////////////////////////////////////////////////////////////////////////////
 
 	// Create a camera and a marker root object for your Three.js scene.
-	// var camera = new THREE.Camera();
-	var camera = new THREE.PerspectiveCamera( 75, renderer.domElement.width / renderer.domElement.height, 0.01, 100000);
-	// camera.matrixAutoUpdate = false;
+	var camera = new THREE.PerspectiveCamera( 45, renderer.domElement.width / renderer.domElement.height, 0.01, 1000);
 	scene.add(camera);
 
 	var arController = null;
@@ -294,50 +292,45 @@
 	})
 	
 	//////////////////////////////////////////////////////////////////////////////
-	//              Code Separator
-	//////////////////////////////////////////////////////////////////////////////
-	
-	//////////////////////////////////////////////////////////////////////////////
-	//		headtrackr got the solution\
+	//		headtrackr got the solution
 	//		https://github.com/auduno/headtrackr/blob/master/src/controllers.js#L28
 	//////////////////////////////////////////////////////////////////////////////
 	onRenderFcts.push(function(){
+		// get marker position
+		var markerPosition = new THREE.Vector3()
 		var matrix = markerRoot.matrixWorld
-		// var matrix = camera.matrixWorld
-		var position = new THREE.Vector3
-		var quaternion = new THREE.Quaternion
-		var scale = new THREE.Vector3
-		matrix.decompose(position, quaternion, scale)
-		console.log(position)
+		matrix.decompose(markerPosition, new THREE.Quaternion(), new THREE.Vector3())
 		
-		var event = position.clone()
-		event.x = -event.x
-		event.y = -event.y
-		// event.z = -event.z
-
-		var screenHeight_cms = 10
+		// setup parameters
+		var screenHeight_cms = 11 
 		var fixedPosition = new THREE.Vector3(0,0,8)
 		var scaling = new THREE.Vector3(0.5, 0.5,1)
-		var damping = new THREE.Vector3(2,2,1);
-
-	
-		var wHeight = screenHeight_cms * scaling.y;
-		var wWidth = wHeight * camera.aspect;
-
-		// update camera
-		var fullWidth = wWidth + Math.abs(event.x * 2 * damping.x * scaling.x)
-		var fullHeight= wHeight+ Math.abs(event.y * 2 * damping.y * scaling.y)
-		var xOffset = event.x > 0 ? 0 : -event.x * 2 * damping.x * scaling.x;
-		var yOffset = event.y < 0 ? 0 :  event.y * 2 * damping.y * scaling.y;
-		camera.setViewOffset(fullWidth, fullHeight, xOffset, yOffset, wWidth, wHeight);
-
-		// camera.position.copy(position).multiplyScalar(0.5)
-
-		camera.position.x = fixedPosition.x + (event.x * scaling.x * damping.x );
-		camera.position.y = fixedPosition.y + (event.y * scaling.y * damping.y );
-		camera.position.z = fixedPosition.z + (event.z * scaling.z * damping.z );
+		var damping = new THREE.Vector3(2,0.5,1);
 		
-		camera.fov = Math.atan((wHeight/2 + Math.abs(event.y * scaling.x * damping.x ))/(Math.abs(event.z*scaling.z)))*360/Math.PI;
+		// compute headPosition from markerPosition
+		var headPosition = new THREE.Vector3()
+		headPosition.x = -markerPosition.x * damping.x * scaling.x
+		headPosition.y = -markerPosition.y * damping.y * scaling.y
+		headPosition.z =  markerPosition.z * damping.z * scaling.z
+	
+		// update camera position
+		camera.position.copy(fixedPosition).add(headPosition)
+
+		// update camera view
+		var viewHeight = screenHeight_cms * scaling.y;
+		var viewWidth = viewHeight * camera.aspect;
+		var fullWidth = viewWidth + Math.abs(headPosition.x * 2)
+		var fullHeight= viewHeight+ Math.abs(headPosition.y * 2)
+		var viewOffsetX = headPosition.x > 0 ? 0 : -headPosition.x * 2;
+		var viewOffsetY = headPosition.y < 0 ? 0 :  headPosition.y * 2;
+		camera.setViewOffset(fullWidth, fullHeight, viewOffsetX, viewOffsetY, viewWidth, viewHeight);
+
+		// update camera fov
+		var deltaY = viewHeight/2 + Math.abs(headPosition.y)
+		var deltaZ = Math.abs(headPosition.z)
+		camera.fov = THREE.Math.radToDeg(Math.atan2( deltaY, deltaZ ) * 2 );
+		
+		// update camera projectionMatrix
 		camera.updateProjectionMatrix();
 	})
 	
