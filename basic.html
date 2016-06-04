@@ -221,8 +221,8 @@
 			arController = new ARController(width, height, cameraParameters);
 			if( debugEnabled )	arController.debugSetup();
 		
-			var cameraMatrix = arController.getCameraMatrix();
-			camera.projectionMatrix.elements.set(cameraMatrix);
+			var projectionMatrix = arController.getCameraMatrix();
+			camera.projectionMatrix.elements.set(projectionMatrix);
 			
 			onCompleted && onCompleted()
 		
