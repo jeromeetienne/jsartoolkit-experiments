@@ -249,7 +249,21 @@
 				document.querySelector('#container').appendChild(arController.canvas);
 
 			}
-		
+
+			// load kanji pattern
+			arController.loadMarker('Data/patt.kanji', function(markerId) {
+				var markerWidth = 1
+				var markerTracker = arController.trackPatternMarkerId(markerId, markerWidth);
+				console.log('kanji marker', markerTracker)
+			});
+	
+			// load hiro pattern
+			arController.loadMarker('Data/patt.hiro', function(markerId) {
+				var markerWidth = 1
+				var markerTracker = arController.trackPatternMarkerId(markerId, markerWidth);
+				console.log('hiro marker', markerTracker)
+			});
+
 			// var cameraMatrix = arController.getCameraMatrix();
 			// camera.projectionMatrix.elements.set(cameraMatrix);
 			
@@ -273,21 +287,21 @@
 
 		if( debugEnabled )	arController.debugDraw();		
 		// update markerRoot with the found markers
-		var markerNum = arController.getMarkerNum();
+		var markerNum = arController.getMarkerNum();		
 		if (markerNum > 0) {
 			// if( markerRoot.visible === false ) {
 				arController.getTransMatSquare(0 /* Marker index */, 1 /* Marker width */, markerRoot.userData.markerMatrix);
 			// } else {
-				// arController.getTransMatSquareCont(0, 1, markerRoot.userData.markerMatrix, markerRoot.userData.markerMatrix);
+				// arController.getTransMatSquareCont(markerNum-1 , 1, markerRoot.userData.markerMatrix, markerRoot.userData.markerMatrix);
 			// }
 			arController.transMatToGLMat(markerRoot.userData.markerMatrix, markerRoot.matrix.elements);
 		}
 
 		// objects visible IIF there is a marker
 		// if (markerNum > 0) {
-		// 	markerRoot.visible = true;
+			// markerRoot.visible = true;
 		// } else {
-		// 	markerRoot.visible = false;
+			// markerRoot.visible = false;
 		// }
 	})
 	
