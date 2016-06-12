@@ -24,8 +24,9 @@ THREE.ArSource.initVideo = function(url, onReady){
 THREE.ArSource.initImage = function(url, onReady){
 	var srcElement = document.createElement('img')
 	document.body.appendChild(srcElement)
-	srcElement.src = '../images/armchair.jpg'
-	srcElement.src = '../images/chalk.jpg'
+	srcElement.src = url
+	// srcElement.src = '../images/armchair.jpg'
+	// srcElement.src = '../images/chalk.jpg'
 	// srcElement.src = '../images/chalk_multi.jpg'
 	// srcElement.src = '../images/kuva.jpg'
 	// srcElement.src = '../images/img.jpg'

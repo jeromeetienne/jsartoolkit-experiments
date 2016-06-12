@@ -58,20 +58,23 @@
 		})
 	}else if( optionPresentInHash('image') === true ){
 		var sourceType = 'image'
-		var url = '../videos/output_4.mp4';
+		// var url = '../images/armchair.jpg'
+		// var url = '../images/chalk.jpg'
+		var url = '../images/chalk_multi.jpg'
+		// var url = '../images/kuva.jpg'
+		var url = '../images/img.jpg'
 		var srcElement = THREE.ArSource.initImage(url, function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
 	}else if( optionPresentInHash('video') === true ){		
 		var sourceType = 'video'
-		var url = '../images/armchair.jpg'
-		var url = '../images/chalk.jpg'
-		var url = '../images/chalk_multi.jpg'
-		var url = '../images/kuva.jpg'
-		var url = '../images/img.jpg'
+		// var url = '../videos/output_4.mp4';
+		var url = '../videos/VID_20160503_165602.mp4'
+		var url = '../videos/headtracking.mp4'
 		var srcElement = THREE.ArSource.initVideo(url, function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
+		srcElement.playbackRate = 0.5
 	}else {
 		switchSource('video')
 	}
@@ -142,12 +145,27 @@
 		console.log(arguments)
 		arContext = new THREE.ArtoolkitContext(width, height, camera, function(){
 			console.log('arContext ready')
+			
+			// load kanji pattern
+			arContext.controller.loadMarker('../data/patt.kanji', function(markerId) {
+				var markerWidth = 1
+				var markerTracker = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
+			
+				// load hiro pattern
+				arContext.controller.loadMarker('../data/patt.hiro', function(markerId) {
+					var markerWidth = 1
+					var markerId = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
+					console.log('hiro markerId', markerId)
+				});
+			});
+
+			// 
+		        // arContext.controller.setPatternDetectionMode(artoolkit.AR_MATRIX_CODE_DETECTION);
+		        // arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);
+
+
 		})
 	}
-
-	// create the marker Root
-	var markerRoot = new THREE.ArMarkerRoot();
-	scene.add(markerRoot.object);
 
 	onRenderFcts.push(function(){
 		if( arContext === null ) return
@@ -156,34 +174,74 @@
 		arContext.update(srcElement)
 				
 		// update markerRoot with the found markers
-		markerRoot.update(arContext)
+		markerKanji.update(arContext)
+		markerHiro.update(arContext)
 	})
 	
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		add an object in the scene
 	//////////////////////////////////////////////////////////////////////////////////
+	var markerKanji = initMarkerKanji()
+	var markerHiro = initMarkerHiro()
+	
+	function initMarkerKanji(){		
+		// create the marker Root
+		var markerRoot = new THREE.ArMarkerRoot();
+		markerRoot.markerInfoId = 0	// FIXME hardcoded for kanji
+		scene.add(markerRoot.object);
 
-	// add a torus knot	
-	var geometry	= new THREE.CubeGeometry(1,1,1);
-	var material	= new THREE.MeshNormalMaterial({
-		transparent : true,
-		opacity: 0.5,
-		side: THREE.DoubleSide
-	}); 
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.z	= geometry.parameters.height/2
-	markerRoot.object.add( mesh );
-	
-	var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
-	var material	= new THREE.MeshNormalMaterial(); 
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.z	= 0.5
-	markerRoot.object.add( mesh );
-	
-	onRenderFcts.push(function(){
-		mesh.rotation.x += 0.1
-	})
+		// add a torus knot	
+		var geometry	= new THREE.CubeGeometry(1,1,1);
+		var material	= new THREE.MeshNormalMaterial({
+			transparent : true,
+			opacity: 0.5,
+			side: THREE.DoubleSide
+		}); 
+		var cube	= new THREE.Mesh( geometry, material );
+		cube.position.z	= geometry.parameters.height/2
+		markerRoot.object.add( cube );
+		
+		var geometry	= new THREE.TorusGeometry(0.4,0.1,32,32);
+		var material	= new THREE.MeshNormalMaterial(); 
+		var torus	= new THREE.Mesh( geometry, material );
+		cube.add( torus );
+		
+		onRenderFcts.push(function(){
+			torus.rotation.x += 0.1
+		})
+		
+		return markerRoot
+	}
+
+	function initMarkerHiro(){		
+		// create the marker Root
+		var markerRoot = new THREE.ArMarkerRoot();
+		markerRoot.markerInfoId = 1	// FIXME hardcoded for hiro
+		scene.add(markerRoot.object);
+
+		// add a torus knot	
+		var geometry	= new THREE.CubeGeometry(1,1,1);
+		var material	= new THREE.MeshNormalMaterial({
+			transparent : true,
+			opacity: 0.5,
+			side: THREE.DoubleSide
+		}); 
+		var cube	= new THREE.Mesh( geometry, material );
+		cube.position.z	= geometry.parameters.height/2
+		markerRoot.object.add( cube );
+		
+		var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
+		var material	= new THREE.MeshNormalMaterial(); 
+		var torus	= new THREE.Mesh( geometry, material );
+		cube.add( torus );
+		
+		onRenderFcts.push(function(){
+			torus.rotation.x += 0.1
+		})
+		
+		return markerRoot
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -209,6 +267,5 @@
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
-	
 })()
 </script></body>
