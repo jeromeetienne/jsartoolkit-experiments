@@ -5,7 +5,7 @@
 <script src="../vendor/jsartoolkit/artoolkit.api.js"></script>
 <script src="three.artoolkitcontext.js"></script>
 <script src="three.arsource.js"></script>
-<script src="three.armarkerroot.js"></script>
+<script src="three.armarker.js"></script>
 <style>
 	body {
 		margin : 0px;
@@ -32,7 +32,7 @@
 	<br/>
 </div>
 <body><script>
-;(function(){
+// ;(function(){
 	var debugEnabled	= optionPresentInHash('debugEnabled') ? true : false
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -68,8 +68,8 @@
 		})
 	}else if( optionPresentInHash('video') === true ){		
 		var sourceType = 'video'
-		// var url = '../videos/output_4.mp4';
-		var url = '../videos/VID_20160503_165602.mp4'
+		var url = '../videos/output_4.mp4';
+		// var url = '../videos/VID_20160503_165602.mp4'
 		// var url = '../videos/headtracking.mp4'
 		var srcElement = THREE.ArSource.initVideo(url, function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
@@ -175,8 +175,8 @@
 		arContext.update(srcElement)
 				
 		// update markerRoot with the found markers
-		markersRoot.forEach(function(markerRoot){
-			markerRoot.update(arContext)
+		arMarkers.forEach(function(arMarker){
+			arMarker.update(arContext)
 		})
 	})
 	
@@ -185,17 +185,18 @@
 	//		add an object in the scene
 	//////////////////////////////////////////////////////////////////////////////////
 	
-	var markersRoot = []
-	markersRoot.push( initMarker(-1, 'torusknot') );
-	markersRoot.push( initMarker( 0, 'torus') );
-	markersRoot.push( initMarker( 1, 'torusknot') );
-	markersRoot.push( initMarker( 2, 'cylinder') );
+	var arMarkers = []
+	arMarkers.push( initMarker(-1, 'torusknot') );
+window.arMarker = arMarkers[0]
+	arMarkers.push( initMarker( 0, 'torus') );
+	arMarkers.push( initMarker( 1, 'torusknot') );
+	arMarkers.push( initMarker( 2, 'cylinder') );
 	
 	function initMarker(markerInfoId, shape){		
 		// create the marker Root
-		var markerRoot = new THREE.ArMarkerRoot();
-		markerRoot.markerInfoId = markerInfoId	// FIXME hardcoded for kanji
-		scene.add(markerRoot.object);
+		var arMarker = new THREE.ArMarker();
+		arMarker.markerInfoId = markerInfoId	// FIXME hardcoded for kanji
+		scene.add(arMarker.markerObject);
 
 		// add a torus knot	
 		var geometry	= new THREE.CubeGeometry(1,1,1);
@@ -206,7 +207,7 @@
 		}); 
 		var cube	= new THREE.Mesh( geometry, material );
 		cube.position.z	= geometry.parameters.height/2
-		markerRoot.object.add( cube );
+		arMarker.originObject.add( cube );
 		
 		if( shape === 'torus' ){
 			var geometry	= new THREE.TorusGeometry(0.4,0.1,32,32);
@@ -228,7 +229,7 @@
 			torus.rotation.x += 0.1
 		})
 		
-		return markerRoot
+		return arMarker
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -255,5 +256,5 @@
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
-})()
+// })()
 </script></body>
