@@ -11,10 +11,10 @@ THREE.ArtoolkitContext = function(width, height, camera, debugEnabled, onReady){
 		_this.controller = new ARController(width, height, cameraParameters);
 		if( _this.debugEnabled  ){
 			_this.controller.debugSetup();
-			_this.controller.canvas.style.position = 'absolute'
-			_this.controller.canvas.style.top = '0px'
-			_this.controller.canvas.style.left = '0px'
-			_this.controller.canvas.style.opacity = '0.2'
+			// _this.controller.canvas.style.position = 'absolute'
+			// _this.controller.canvas.style.top = '0px'
+			// _this.controller.canvas.style.left = '0px'
+			// _this.controller.canvas.style.opacity = '0.2'
 		}
 
 		// put that elsewhere

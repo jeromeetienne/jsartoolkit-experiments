@@ -1,12 +1,3 @@
-# TODO
-- rename ArMarker into armarker
-
-# Better API
-- DONE put video init in arcontext
-- make markerroot specific to a given marker
-- make a camera helper, and a debug camera
-
-
 
 # About arMarker
 - arMarker.markerObject 
@@ -16,6 +7,7 @@
   - user adds his 3d here
 
 # Improvement
+- make a camera helper, and a debug camera
 - make tweening on ar marker
   - simply apply a smoothen on the arMarker.markerObject
   - cant not be done at the matrix level
@@ -24,3 +16,7 @@
   - several THREE.ArMarker
   - average the pose from each arMarker.originObject
 - make motion prediction
+
+# Better API
+- DONE put video init in arcontext
+- DONE make arMarker specific to a given marker
