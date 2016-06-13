@@ -166,21 +166,21 @@
 			
 			// load kanji pattern
 			// TODO pass that into promise
-			// arContext.controller.loadMarker('../data/patt.kanji', function(markerId) {
-			// 	var markerWidth = 1
-			// 	var markerTracker = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
+			arContext.controller.loadMarker('../data/patt.kanji', function(markerId) {
+				var markerWidth = 1
+				var markerTracker = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
+			
+				// load hiro pattern
+				arContext.controller.loadMarker('../data/patt.hiro', function(markerId) {
+					var markerWidth = 1
+					var markerId = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
+					console.log('hiro markerId', markerId)
+				});
+			});
 			// 
-			// 	// load hiro pattern
-			// 	arContext.controller.loadMarker('../data/patt.hiro', function(markerId) {
-			// 		var markerWidth = 1
-			// 		var markerId = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
-			// 		console.log('hiro markerId', markerId)
-			// 	});
-			// });
-
-			// good for roomspace
-		        arContext.controller.setPatternDetectionMode(artoolkit.AR_MATRIX_CODE_DETECTION);
-		        arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);
+			// // good for roomspace
+		        // arContext.controller.setPatternDetectionMode(artoolkit.AR_MATRIX_CODE_DETECTION);
+		        // arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);
 
 
 		})
@@ -204,11 +204,11 @@
 	//////////////////////////////////////////////////////////////////////////////////
 	
 	var arMarkers = []
-	arMarkers.push( initMarker(-1, 'torusknot') );
-window.arMarker = arMarkers[0]
+	// arMarkers.push( initMarker(-1, 'torusknot') );
+// window.arMarker = arMarkers[0]
 	arMarkers.push( initMarker( 0, 'torus') );
-	arMarkers.push( initMarker( 1, 'torusknot') );
-	arMarkers.push( initMarker( 2, 'cylinder') );
+	// arMarkers.push( initMarker( 1, 'torusknot') );
+	// arMarkers.push( initMarker( 2, 'cylinder') );
 	
 	function initMarker(markerInfoId, shape){		
 		// create the marker Root
