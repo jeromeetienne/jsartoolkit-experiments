@@ -1,41 +1,29 @@
-THREE.ArtoolkitContext = function(width, height, camera, onReady){
+THREE.ArtoolkitContext = function(width, height, camera, debugEnabled, onReady){
 	var _this = this
 	this.controller = null
-	this.debugEnabled = false
+	this.debugEnabled = debugEnabled
 	this.ready = false
-	var cameraParameters = new ARCameraParam('../data/camera_para.dat', function() {
+	
+	// TODO put that in a function init
+	var cameraParamsUrl = '../data/camera_para.dat'
+	var cameraParameters = new ARCameraParam(cameraParamsUrl, function() {
 	
 		_this.controller = new ARController(width, height, cameraParameters);
-		if( _this.debugEnabled  )	_this.controller.debugSetup();
-	
+		if( _this.debugEnabled  ){
+			_this.controller.debugSetup();
+			_this.controller.canvas.style.position = 'absolute'
+			_this.controller.canvas.style.top = '0px'
+			_this.controller.canvas.style.left = '0px'
+			_this.controller.canvas.style.opacity = '0.2'
+		}
+
+		// put that elsewhere
 		var projectionMatrix = _this.controller.getCameraMatrix();
 		camera.projectionMatrix.elements.set(projectionMatrix);
-		
-		// 
-
-		// // load kanji pattern
-		// _this.controller.loadMarker('../data/patt.kanji', function(markerId) {
-		// 	var markerWidth = 1
-		// 	var markerTracker = _this.controller.trackPatternMarkerId(markerId, markerWidth);
-		// 
-		// 	// load hiro pattern
-		// 	_this.controller.loadMarker('../data/patt.hiro', function(markerId) {
-		// 		var markerWidth = 1
-		// 		var markerId = _this.controller.trackPatternMarkerId(markerId, markerWidth);
-		// 		console.log('hiro markerId', markerId)
-		// 	});
-		// });
-
-
-
-	        // _this.controller.setPatternDetectionMode(artoolkit.AR_MATRIX_CODE_DETECTION);
-	        // _this.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);
-	
 
 		_this.ready = true
 
-		onReady && onReady()
-	
+		onReady && onReady()	
 	})
 }
 

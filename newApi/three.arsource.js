@@ -1,5 +1,9 @@
 /**
  * this should be custom way to create arcontext, not another function
+ *
+ * ArContext = THREE.ArtoolkitContext()
+ * arContext.init(cameraParamsUrl, onReady)
+ * arContext.initWithVideo(url, onReady)
  */
 
 THREE.ArSource = {}

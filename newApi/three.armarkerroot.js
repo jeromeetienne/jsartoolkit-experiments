@@ -28,24 +28,18 @@ THREE.ArMarkerRoot.prototype.update = function (arContext) {
 		}
 	}
 	var wasVisible = this.object.visible
+
 	// objects visible IIF there is a marker
-	if (markerInfo !== null ) {
-		this.object.visible = true;
-	} else {
-		this.object.visible = false;
-	}	
+	this.object.visible = markerInfo !== null ? true : false
 
 	if( markerInfo === null )	return
 
 // console.log('tmpInfo', tmpInfo.id, this.markerInfoId)
 
-	
-	// console.log('markerInfo', markerInfo.id)
-
-	// if( wasVisible === false ) {
+	if( wasVisible === false ) {
 		arController.getTransMatSquare(markerIndex, this.markerWidth, this.object.userData.markerMatrix);
-	// } else {
-		// arController.getTransMatSquareCont(markerIndex, this.markerWidth, markerRoot.userData.markerMatrix, markerRoot.userData.markerMatrix);
-	// }
+	} else {
+		arController.getTransMatSquareCont(markerIndex, this.markerWidth, this.object.userData.markerMatrix, this.object.userData.markerMatrix);
+	}
 	arController.transMatToGLMat(this.object.userData.markerMatrix, this.object.matrix.elements);
 };
