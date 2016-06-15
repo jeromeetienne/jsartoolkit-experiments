@@ -42,6 +42,17 @@
 	//              Code Separator
 	//////////////////////////////////////////////////////////////////////////////
 
+	window.switchSource = function switchSource(sourceType){
+		reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled)
+	}
+	window.toggleDebugDetect = function toggleDebugDetect(){
+		reloadOptions(sourceType, debugDetectEnabled ? false : true, debugCameraEnabled)		
+	}
+	window.toggleDebugCamera = function toggleDebugCamera(){
+		reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled ? false : true)		
+	}
+	
+
 
 	function optionPresentInHash(varName) {
 		var query = window.location.hash.substring(1);
@@ -85,16 +96,6 @@
 		document.body.appendChild(srcElement)
 	}else {
 		switchSource('video')
-	}
-	
-	window.switchSource = function switchSource(sourceType){
-		reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled)
-	}
-	window.toggleDebugDetect = function toggleDebugDetect(){
-		reloadOptions(sourceType, debugDetectEnabled ? false : true, debugCameraEnabled)		
-	}
-	window.toggleDebugCamera = function toggleDebugCamera(){
-		reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled ? false : true)		
 	}
 	
         function reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled){
@@ -208,7 +209,7 @@
 			arMarker.update(arContext)
 		})
 		
-		// multiMarker.update()
+		multiMarker.update()
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -223,39 +224,39 @@
 	
 	var markerLeft = initMarker( 1, 'octahedron')
 	arMarkers.push( markerLeft )
-	// markerLeft.originObject.position.x = 3.15
-	// markerLeft.originObject.position.z = 1
+	markerLeft.originObject.position.x = 3.15
+	markerLeft.originObject.position.z = 1
 	
 	var markerMiddle = initMarker( 2, 'torusknot')
 	arMarkers.push( markerMiddle )
-	// markerMiddle.originObject.position.x = 1
-	// markerMiddle.originObject.position.z = 1
+	markerMiddle.originObject.position.x = 1
+	markerMiddle.originObject.position.z = 1
 
 	var markerRight = initMarker( 0, 'cylinder')
 	arMarkers.push( markerRight )
-	// markerRight.originObject.position.x = -3.3
-	// markerRight.originObject.position.z = 0.2
+	markerRight.originObject.position.x = -3.3
+	markerRight.originObject.position.z = 0.2
 	
-	// var multiMarker = new THREE.ArMultiMarker()
-	// multiMarker.arMarkers = arMarkers
-	// multiMarker.originObject.lookAt(new THREE.Vector3(0,1,0))
-	// multiMarker.originObject.position.y = 5
-	// // var geometry	= new THREE.TorusKnotGeometry(1,0.1,32,32);
-	// // var material	= new THREE.MeshNormalMaterial(); 
-	// var geometry	= new THREE.PlaneGeometry(40,40);
-	// var material	= new THREE.MeshBasicMaterial({
-	// 	map :  new THREE.TextureLoader().load( '../textures/UV_Grid_Sm.jpg', function onLoaded(texture){
-	// 		texture.wrapS = THREE.RepeatWrapping;
-	// 		texture.wrapT = THREE.RepeatWrapping;
-	// 		texture.repeat.set(4, 4);
-	// 	}),
-	// 	side : THREE.DoubleSide,
-	// 	opacity: 0.5,
-	// 	transparent: true,
-	// }); 
-	// var torus	= new THREE.Mesh( geometry, material );
-	// multiMarker.originObject.add( torus );
-	// scene.add(multiMarker.markerObject)
+	var multiMarker = new THREE.ArMultiMarker()
+	multiMarker.arMarkers = arMarkers
+	multiMarker.originObject.lookAt(new THREE.Vector3(0,1,0))
+	multiMarker.originObject.position.y = 5
+	// var geometry	= new THREE.TorusKnotGeometry(1,0.1,32,32);
+	// var material	= new THREE.MeshNormalMaterial(); 
+	var geometry	= new THREE.PlaneGeometry(40,40);
+	var material	= new THREE.MeshBasicMaterial({
+		map :  new THREE.TextureLoader().load( '../textures/UV_Grid_Sm.jpg', function onLoaded(texture){
+			texture.wrapS = THREE.RepeatWrapping;
+			texture.wrapT = THREE.RepeatWrapping;
+			texture.repeat.set(4, 4);
+		}),
+		side : THREE.DoubleSide,
+		opacity: 0.5,
+		transparent: true,
+	}); 
+	var torus	= new THREE.Mesh( geometry, material );
+	multiMarker.originObject.add( torus );
+	scene.add(multiMarker.markerObject)
 	
 	function initMarker(markerInfoId, shape){		
 		// create the marker Root
