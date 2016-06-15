@@ -67,7 +67,7 @@
 		// var url = '../images/chalk_multi.jpg'
 		// var url = '../images/kuva.jpg'
 		// var url = '../images/img.jpg'
-		var url = '../images/marker_cube_hamming63.jpg'
+		var url = '../images/marker_cube_hamming63.png'
 		var srcElement = THREE.ArSource.initImage(url, function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
@@ -194,8 +194,6 @@
 		        arContext.controller.setPatternDetectionMode(artoolkit.AR_MATRIX_CODE_DETECTION);
 		        arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);
 		        // arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_PARITY65)
-
-
 		})
 	}
 
@@ -275,7 +273,7 @@
 		var cube	= new THREE.Mesh( geometry, material );
 		cube.position.z	= geometry.parameters.height/2
 		arMarker.originObject.add( cube );
-		
+
 		if( shape === 'torus' ){
 			var geometry	= new THREE.TorusGeometry(0.4,0.1,32,32);
 		}else if( shape === 'torusknot' ){
@@ -292,7 +290,7 @@
 		var material	= new THREE.MeshNormalMaterial(); 
 		var torus	= new THREE.Mesh( geometry, material );
 		cube.add( torus );
-		
+
 		if( shape !== 'axis' ){
 			onRenderFcts.push(function(){
 				torus.rotation.y += 0.1
