@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <script src="vendor/three.js/build/three.js"></script>
+<script src="../vendor/three.js/examples/js/controls/OrbitControls.js"></script>
 <script src="vendor/jsartoolkit/artoolkit.debug.js"></script>
 <script src="vendor/jsartoolkit/artoolkit.api.js"></script>
 <style>
@@ -137,17 +138,14 @@
 	}
 
 	if( optionPresentInHash('webcam') === true ){		
-		var sourceType = 'webcam'
 		var srcElement = initSourceWebcam(function(){
 			onSourceImageReady(srcElement.videoWidth, srcElement.videoHeight)		
 		})
 	}else if( optionPresentInHash('image') === true ){		
-		var sourceType = 'image'
 		var srcElement = initSourceImage(function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
 	}else if( optionPresentInHash('video') === true ){		
-		var sourceType = 'video'
 		var srcElement = initSourceVideo(function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
@@ -210,9 +208,25 @@
 
 	// Create a camera and a marker root object for your Three.js scene.
 	var camera = new THREE.Camera();
+	camera.updateProjectionMatrix = function(){} // required by THREE.CameraHelper
 	camera.matrixAutoUpdate = false;
 	scene.add(camera);
+	
+	var useDebugCamera = false
+	if( useDebugCamera ){
+		var cameraHelper = new THREE.CameraHelper(camera)
+		scene.add(cameraHelper)
 
+		// Create a three.js camera.
+		var cameraDebug = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+		scene.add(cameraDebug);
+		cameraDebug.position.x = -2
+		cameraDebug.position.z = -10
+		cameraDebug.lookAt(scene.position)
+
+		var controls = new THREE.OrbitControls(cameraDebug)		
+	}
+	
 	var arController = null;
 	function onSourceImageReady(width, height, onCompleted){
 		console.log(arguments)
@@ -308,6 +322,12 @@
 	// render the scene
 
 	onRenderFcts.push(function(){
+		if( useDebugCamera ){
+			cameraHelper.update()
+			renderer.render( scene, cameraDebug );
+			return
+		}	
+
 		renderer.render( scene, camera );
 	})
 

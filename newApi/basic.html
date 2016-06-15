@@ -7,7 +7,7 @@
 <script src="three.artoolkitcontext.js"></script>
 <script src="three.arsource.js"></script>
 <script src="three.armarker.js"></script>
-<!-- <script src="CameraHelper.js"></script> -->
+<script src="three.armultimarker.js"></script>
 <style>
 	body {
 		margin : 0px;
@@ -21,8 +21,9 @@
 	with <a href="https://github.com/mrdoob/three.js" target="_blank">three.js</a>
 	<br/>
 	<a href="https://github.com/jeromeetienne/jsartoolkit-example" target="_blank">github repo</a>
-	-
-	<a href='javascript:void(0)' onclick='toggleDebug()' style='color: grey'>toggle debug</a>
+	- Toggle :
+	<a href='javascript:void(0)' onclick='toggleDebugDetect()' style='color: grey'>Debug Detection</a> /
+	<a href='javascript:void(0)' onclick='toggleDebugCamera()' style='color: grey'>Debug Camera</a>
 	<br/>
 	Source:
 	<a href='javascript:void(0)' onclick='switchSource("video")' style='color: grey'>video</a>
@@ -34,8 +35,8 @@
 	<br/>
 </div>
 <body><script>
-// ;(function(){
-	var debugEnabled	= optionPresentInHash('debugEnabled') ? true : false
+	var debugDetectEnabled	= optionPresentInHash('debugDetectEnabled') ? true : false
+	var debugCameraEnabled	= optionPresentInHash('debugCameraEnabled') ? true : false
 
 	//////////////////////////////////////////////////////////////////////////////
 	//              Code Separator
@@ -53,11 +54,12 @@
 		return false
 	}
 
-	if( optionPresentInHash('webcam') === true ){		
+	if( optionPresentInHash('webcam') === true ){
 		var sourceType = 'webcam'
 		var srcElement = THREE.ArSource.initWebcam(function(){
 			onSourceImageReady(srcElement.videoWidth, srcElement.videoHeight)		
 		})
+		document.body.appendChild(srcElement)
 	}else if( optionPresentInHash('image') === true ){
 		var sourceType = 'image'
 		var url = '../images/armchair.jpg'
@@ -65,39 +67,48 @@
 		// var url = '../images/chalk_multi.jpg'
 		// var url = '../images/kuva.jpg'
 		// var url = '../images/img.jpg'
+		var url = '../images/marker_cube_hamming63.jpg'
 		var srcElement = THREE.ArSource.initImage(url, function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
+		document.body.appendChild(srcElement)
 	}else if( optionPresentInHash('video') === true ){		
 		var sourceType = 'video'
-		var url = '../videos/output_4.mp4';
-		// var url = '../videos/VID_20160503_165602.mp4'
+		// var url = '../videos/output_4.mp4';
+		var url = '../videos/VID_20160503_165602.mp4'
 		// var url = '../videos/headtracking.mp4'
 		var srcElement = THREE.ArSource.initVideo(url, function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
 		srcElement.playbackRate = 0.5
+		srcElement.volume = 0
+		document.body.appendChild(srcElement)
 	}else {
 		switchSource('video')
 	}
 	
-	function switchSource(sourceType){
-		reloadOptions(sourceType, debugEnabled)
+	window.switchSource = function switchSource(sourceType){
+		reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled)
 	}
-	function toggleDebug(){
-		reloadOptions(sourceType, debugEnabled ? false : true)		
+	window.toggleDebugDetect = function toggleDebugDetect(){
+		reloadOptions(sourceType, debugDetectEnabled ? false : true, debugCameraEnabled)		
 	}
-
-	window.switchSource= switchSource
-	window.toggleDebug= toggleDebug
+	window.toggleDebugCamera = function toggleDebugCamera(){
+		reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled ? false : true)		
+	}
 	
-        function reloadOptions(sourceType, debugEnabled){
+        function reloadOptions(sourceType, debugDetectEnabled, debugCameraEnabled){
                 var optionsString = ''
                 optionsString += sourceType
 
-                if( debugEnabled === true ){
-                        optionsString += (optionsString.length ? '&': '') + 'debugEnabled'
+                if( debugDetectEnabled === true ){
+                        optionsString += (optionsString.length ? '&': '') + 'debugDetectEnabled'
                 }
+
+                if( debugCameraEnabled === true ){
+                        optionsString += (optionsString.length ? '&': '') + 'debugCameraEnabled'
+                }
+		console.log(optionsString)
                 location.hash   = '#'+optionsString
                 location.reload()                
         }
@@ -143,8 +154,7 @@
 	camera.matrixAutoUpdate = false;
 	scene.add(camera);
 	
-	var useDebugCamera = true
-	if( useDebugCamera ){
+	if( debugCameraEnabled ){
 		var cameraHelper = new THREE.CameraHelper(camera)
 		scene.add(cameraHelper)
 
@@ -161,26 +171,29 @@
 	var arContext = null
 	function onSourceImageReady(width, height, onCompleted){
 		console.log(arguments)
-		arContext = new THREE.ArtoolkitContext(width, height, camera, debugEnabled, function(){
+		arContext = new THREE.ArtoolkitContext(width, height, camera, debugDetectEnabled, function(){
 			console.log('arContext ready')
 			
 			// load kanji pattern
 			// TODO pass that into promise
-			arContext.controller.loadMarker('../data/patt.kanji', function(markerId) {
-				var markerWidth = 1
-				var markerTracker = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
-			
-				// load hiro pattern
-				arContext.controller.loadMarker('../data/patt.hiro', function(markerId) {
-					var markerWidth = 1
-					var markerId = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
-					console.log('hiro markerId', markerId)
-				});
-			});
+			// arContext.controller.loadMarker('../data/patt.kanji', function(markerId) {
+			// 	var markerWidth = 1
+			// 	var markerTracker = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
 			// 
-			// // good for roomspace
-		        // arContext.controller.setPatternDetectionMode(artoolkit.AR_MATRIX_CODE_DETECTION);
-		        // arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);
+			// 	// load hiro pattern
+			// 	arContext.controller.loadMarker('../data/patt.hiro', function(markerId) {
+			// 		var markerWidth = 1
+			// 		var markerId = arContext.controller.trackPatternMarkerId(markerId, markerWidth);
+			// 		console.log('hiro markerId', markerId)
+			// 	});
+			// });
+
+			// good for roomspace
+			// For more information about AR_MATRIX_CODE_3x3_HAMMING63
+			// https://github.com/artoolkit/artoolkit5/tree/master/doc/patterns/Matrix%20code%203x3%20with%20Hamming%20(6%2C3)%20code
+		        arContext.controller.setPatternDetectionMode(artoolkit.AR_MATRIX_CODE_DETECTION);
+		        arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);
+		        // arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_PARITY65)
 
 
 		})
@@ -196,18 +209,55 @@
 		arMarkers.forEach(function(arMarker){
 			arMarker.update(arContext)
 		})
+		
+		// multiMarker.update()
 	})
-	
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object in the scene
+	//		configure ar markers
 	//////////////////////////////////////////////////////////////////////////////////
 	
 	var arMarkers = []
-	arMarkers.push( initMarker(-1, 'torusknot') );
-	arMarkers.push( initMarker( 0, 'torus') );
-	arMarkers.push( initMarker( 1, 'torusknot') );
-	arMarkers.push( initMarker( 2, 'cylinder') );
+	
+	var markerUnknown = initMarker(-1, 'torusknot')
+	// markerUnknown.originObject.position.y = 1
+	arMarkers.push( markerUnknown );
+	
+	var markerLeft = initMarker( 1, 'octahedron')
+	arMarkers.push( markerLeft )
+	// markerLeft.originObject.position.x = 3.15
+	// markerLeft.originObject.position.z = 1
+	
+	var markerMiddle = initMarker( 2, 'torusknot')
+	arMarkers.push( markerMiddle )
+	// markerMiddle.originObject.position.x = 1
+	// markerMiddle.originObject.position.z = 1
+
+	var markerRight = initMarker( 0, 'cylinder')
+	arMarkers.push( markerRight )
+	// markerRight.originObject.position.x = -3.3
+	// markerRight.originObject.position.z = 0.2
+	
+	// var multiMarker = new THREE.ArMultiMarker()
+	// multiMarker.arMarkers = arMarkers
+	// multiMarker.originObject.lookAt(new THREE.Vector3(0,1,0))
+	// multiMarker.originObject.position.y = 5
+	// // var geometry	= new THREE.TorusKnotGeometry(1,0.1,32,32);
+	// // var material	= new THREE.MeshNormalMaterial(); 
+	// var geometry	= new THREE.PlaneGeometry(40,40);
+	// var material	= new THREE.MeshBasicMaterial({
+	// 	map :  new THREE.TextureLoader().load( '../textures/UV_Grid_Sm.jpg', function onLoaded(texture){
+	// 		texture.wrapS = THREE.RepeatWrapping;
+	// 		texture.wrapT = THREE.RepeatWrapping;
+	// 		texture.repeat.set(4, 4);
+	// 	}),
+	// 	side : THREE.DoubleSide,
+	// 	opacity: 0.5,
+	// 	transparent: true,
+	// }); 
+	// var torus	= new THREE.Mesh( geometry, material );
+	// multiMarker.originObject.add( torus );
+	// scene.add(multiMarker.markerObject)
 	
 	function initMarker(markerInfoId, shape){		
 		// create the marker Root
@@ -234,6 +284,8 @@
 			var geometry	= new THREE.OctahedronGeometry(0.5, 2 )
 		}else if( shape === 'cylinder' ){
 			var geometry	= new THREE.CylinderGeometry(0.2, 0.2, 1, 32 )
+		// }else if( shape === 'axis' ){
+		// 	var geometry	= new THREE.AxisHelper( 1 );
 		}else {
 			console.assert(false)
 		}
@@ -241,13 +293,116 @@
 		var torus	= new THREE.Mesh( geometry, material );
 		cube.add( torus );
 		
-		onRenderFcts.push(function(){
-			torus.rotation.y += 0.1
-			torus.rotation.x += 0.1
-		})
+		if( shape !== 'axis' ){
+			onRenderFcts.push(function(){
+				torus.rotation.y += 0.1
+				torus.rotation.x += 0.1
+			})
+		}
 		
 		return arMarker
 	}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//	plane always in front of the camera, exactly as big as the viewpoer
+//////////////////////////////////////////////////////////////////////////////
+
+;(function(){
+	if( debugCameraEnabled === false )	return
+
+	var video = srcElement
+
+	// build the plane
+	var geometry = new THREE.PlaneGeometry(2, 2);
+	// var geometry = new THREE.BoxGeometry(10,10);
+	var material = new THREE.MeshBasicMaterial({
+		// map : new THREE.TextureLoader().load('images/UV_Grid_Sm.jpg'),
+		side: THREE.DoubleSide,
+		opacity: 0.5,
+		transparent: true,
+	});
+	var seethruPlane = new THREE.Mesh(geometry, material);
+	scene.add(seethruPlane);
+
+
+
+
+	material.map = new THREE.VideoTexture( video );
+	material.map.minFilter = THREE.NearestFilter;
+	material.map.maxFilter = THREE.NearestFilter;
+	material.map.format = THREE.RGBFormat;
+	material.map.generateMipmaps = false;
+
+	onRenderFcts.push(function(delta){
+		// camera.updateMatrixWorld(true)
+	// var camera = cameraDebug
+		// get seethruPlane position
+		var position = new THREE.Vector3(0,0,30)
+		camera.localToWorld(position)
+		seethruPlane.position.copy(position)
+
+		// get seethruPlane quaternion
+		camera.matrixWorld.decompose( camera.position, camera.quaternion, camera.scale );	
+		seethruPlane.quaternion.copy( camera.quaternion)
+
+	// FIXME hardcoding fov/aspect get it from projection matrix
+	camera.fov = 45
+	camera.aspect = 640/480
+		// get seethruPlane height relative to fov
+		seethruPlane.scale.y = Math.tan(Math.PI/180 * camera.fov/2)*position.length()
+		// get seethruPlane aspect
+		seethruPlane.scale.x = seethruPlane.scale.y * camera.aspect
+		
+		// to mirror the video in x
+		// seethruPlane.scale.x *= -1
+	})
+
+	window.addEventListener('resize', function(){
+		updateSeeThruAspectUv(seethruPlane)	
+	})
+	video.addEventListener('canplaythrough', function(){
+		updateSeeThruAspectUv(seethruPlane)
+	})
+
+	function updateSeeThruAspectUv(plane){
+		if( video.videoWidth === 0 )	return
+		if( video.videoHeight === 0 )	return
+
+		var faceVertexUvs = plane.geometry.faceVertexUvs[0]
+		var screenAspect = window.innerWidth / window.innerHeight
+		var videoAspect = video.videoWidth / video.videoHeight
+		// aspect hardcoded for jsartoolkit
+		var videoAspect = 640 / 480
+		
+		plane.geometry.uvsNeedUpdate = true
+
+		if( screenAspect >= videoAspect ){
+			var actualHeight = videoAspect / screenAspect;
+			// faceVertexUvs y 0
+			faceVertexUvs[0][1].y = 0.5 - actualHeight/2
+			faceVertexUvs[1][0].y = 0.5 - actualHeight/2
+			faceVertexUvs[1][1].y = 0.5 - actualHeight/2
+
+			// faceVertexUvs y 1
+			faceVertexUvs[0][0].y = 0.5 + actualHeight/2
+			faceVertexUvs[0][2].y = 0.5 + actualHeight/2
+			faceVertexUvs[1][2].y = 0.5 + actualHeight/2
+		}else{
+			var actualWidth = screenAspect / videoAspect;
+
+			// faceVertexUvs x 0
+			faceVertexUvs[0][0].x = 0.5 - actualWidth/2
+			faceVertexUvs[0][1].x = 0.5 - actualWidth/2
+			faceVertexUvs[1][0].x = 0.5 - actualWidth/2
+			
+			// faceVertexUvs x 1
+			faceVertexUvs[0][2].x = 0.5 + actualWidth/2
+			faceVertexUvs[1][1].x = 0.5 + actualWidth/2
+			faceVertexUvs[1][2].x = 0.5 + actualWidth/2
+		}
+	}
+})()
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -256,7 +411,7 @@
 	// render the scene
 	onRenderFcts.push(function(){
 
-		if( useDebugCamera ){
+		if( debugCameraEnabled ){
 			cameraHelper.update()
 			renderer.render( scene, cameraDebug );
 			return
@@ -279,5 +434,4 @@
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
-// })()
 </script></body>

@@ -11,7 +11,6 @@ THREE.ArSource = {}
 
 THREE.ArSource.initVideo = function(url, onReady){
 	var srcElement = document.createElement('video');
-	document.body.appendChild(srcElement)
 	srcElement.src = url
 	srcElement.autoplay = true;
 	srcElement.webkitPlaysinline = true;
@@ -27,13 +26,7 @@ THREE.ArSource.initVideo = function(url, onReady){
 
 THREE.ArSource.initImage = function(url, onReady){
 	var srcElement = document.createElement('img')
-	document.body.appendChild(srcElement)
 	srcElement.src = url
-	// srcElement.src = '../images/armchair.jpg'
-	// srcElement.src = '../images/chalk.jpg'
-	// srcElement.src = '../images/chalk_multi.jpg'
-	// srcElement.src = '../images/kuva.jpg'
-	// srcElement.src = '../images/img.jpg'
 	srcElement.width = 640
 	srcElement.height = 480
 
@@ -47,7 +40,6 @@ THREE.ArSource.initWebcam = function(onReady){
 	navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
 	var srcElement = document.createElement('video');
-	document.body.appendChild(srcElement);
 
 	if (navigator.getUserMedia == false )	console.log("navigator.getUserMedia not present in your browser");
 

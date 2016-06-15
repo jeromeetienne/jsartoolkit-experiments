@@ -21,12 +21,13 @@ THREE.ArMarker = function(){
 THREE.ArMarker.prototype.update = function (arContext) {
 	var arController = arContext.controller
 	var markerNum = arController.getMarkerNum();
-// console.log('markerNum', markerNum)
 
 	var markerInfo = null
 	for(var markerIndex = 0; markerIndex < markerNum; markerIndex++){
 		var tmpInfo = arController.getMarker(markerIndex);
-		if( tmpInfo.id === this.markerInfoId ){
+// console.log('tmpInfo', tmpInfo)
+
+		if( tmpInfo.idMatrix === this.markerInfoId ){
 			markerInfo = tmpInfo
 			break;
 		}
@@ -46,4 +47,7 @@ THREE.ArMarker.prototype.update = function (arContext) {
 		arController.getTransMatSquareCont(markerIndex, this.markerWidth, this.markerObject.userData.markerMatrix, this.markerObject.userData.markerMatrix);
 	}
 	arController.transMatToGLMat(this.markerObject.userData.markerMatrix, this.markerObject.matrix.elements);
+	
+	// refeed position/quaternion/scale
+	this.markerObject.matrix.decompose(this.markerObject.position, this.markerObject.quaternion, this.markerObject.scale )
 };
