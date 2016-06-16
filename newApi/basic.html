@@ -216,7 +216,7 @@ srcElement.play()
 			arMarker.update(arContext)
 		})
 		
-		multiMarker.update()
+		if( window.multiMarker ) multiMarker.update()
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -225,32 +225,27 @@ srcElement.play()
 	
 	var arMarkers = []
 	
-	// var markerUnknown = initMarker(-1, 'torusknot')
+	// var markerUnknown = buildDebugArMarker(-1, 'torusknot')
 	// arMarkers.push( markerUnknown );
 	// markerUnknown.originObject.position.y = 1
 	
-	var markerLeft = initMarker( 1, 'octahedron')
+	var markerLeft = buildDebugArMarker(1)
 	arMarkers.push( markerLeft )
 	markerLeft.originObject.position.x =  3.8
 	markerLeft.originObject.position.y = -0.1
-	// markerLeft.originObject.position.z = 1
 	
-	var markerMiddle = initMarker( 2, 'torusknot')
+	var markerMiddle = buildDebugArMarker(2)
 	arMarkers.push( markerMiddle )
-	// markerMiddle.originObject.position.z = 1
 
-	var markerRight = initMarker( 0, 'cylinder')
+	var markerRight = buildDebugArMarker(0)
 	arMarkers.push( markerRight )
 	markerRight.originObject.position.x = -3.3
 	markerRight.originObject.position.y = -0.2
-	// markerRight.originObject.position.z =  1
 	
 	var multiMarker = new THREE.ArMultiMarker()
 	multiMarker.arMarkers = arMarkers
-	// multiMarker.originObject.lookAt(new THREE.Vector3(0,1,0))
+	multiMarker.originObject.rotateX(-Math.PI/2)
 	multiMarker.originObject.position.y = 5
-	// var geometry	= new THREE.TorusKnotGeometry(1,0.1,32,32);
-	// var material	= new THREE.MeshNormalMaterial(); 
 	var geometry	= new THREE.PlaneGeometry(40,40);
 	var material	= new THREE.MeshBasicMaterial({
 		map :  new THREE.TextureLoader().load( '../textures/UV_Grid_Sm.jpg', function onLoaded(texture){
@@ -266,48 +261,49 @@ srcElement.play()
 	multiMarker.originObject.add( torus );
 	scene.add(multiMarker.markerObject)
 	
-	function initMarker(markerInfoId, shape){		
+	function buildDebugArMarker(markerInfoId){		
 		// create the marker Root
 		var arMarker = new THREE.ArMarker();
-		arMarker.markerInfoId = markerInfoId	// FIXME hardcoded for kanji
+		arMarker.markerInfoId = markerInfoId
 		scene.add(arMarker.markerObject);
 
-return arMarker
-		// add a torus knot	
+		// build the canvas for the texture
+		var canvas = document.createElement('canvas')
+		canvas.width = canvas.height = 256
+		var context = canvas.getContext('2d')
+		context.fillStyle = "rgb(0, 0, 200)";
+		context.fillRect (0, 0, canvas.width, canvas.height);
+		context.translate(canvas.width/2 * 3/5, canvas.height/2 * 5/3);
+		context.fillStyle = "rgb(200, 0, 200)";
+		context.font = "256px monospace";
+		context.fillText(markerInfoId, 0, 1)
+
+		// add a plane on the marker
 		var geometry	= new THREE.CubeGeometry(1,1,1);
-		var material	= new THREE.MeshNormalMaterial({
+		var geometry	= new THREE.PlaneGeometry(1,1);
+		var material	= new THREE.MeshBasicMaterial({
+			map: new THREE.CanvasTexture( canvas ),
 			transparent : true,
 			opacity: 0.5,
 			side: THREE.DoubleSide
 		}); 
 		var cube	= new THREE.Mesh( geometry, material );
-		cube.position.z	= geometry.parameters.height/2
-		arMarker.originObject.add( cube );
-
-		if( shape === 'torus' ){
-			var geometry	= new THREE.TorusGeometry(0.4,0.1,32,32);
-		}else if( shape === 'torusknot' ){
-			var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
-		}else if( shape === 'octahedron' ){
-			var geometry	= new THREE.OctahedronGeometry(0.5, 2 )
-		}else if( shape === 'cylinder' ){
-			var geometry	= new THREE.CylinderGeometry(0.2, 0.2, 1, 32 )
-		// }else if( shape === 'axis' ){
-		// 	var geometry	= new THREE.AxisHelper( 1 );
-		}else {
-			console.assert(false)
+		if( geometry instanceof THREE.CubeGeometry ){
+			cube.position.z	= geometry.parameters.height/2
 		}
-		var material	= new THREE.MeshNormalMaterial(); 
-		var torus	= new THREE.Mesh( geometry, material );
-		cube.add( torus );
+		arMarker.markerObject.add( cube );
 
-		if( shape !== 'axis' ){
-			onRenderFcts.push(function(){
-				torus.rotation.y += 0.1
-				torus.rotation.x += 0.1
-			})
-		}
-		
+		// // add a torus knot	
+		// var geometry	= new THREE.CubeGeometry(1,1,1);
+		// var material	= new THREE.MeshNormalMaterial({
+		// 	transparent : true,
+		// 	opacity: 0.5,
+		// 	side: THREE.DoubleSide
+		// }); 
+		// var mesh	= new THREE.Mesh( geometry, material );
+		// arMarker.originObject.add( mesh );
+	
+		// return arMarker
 		return arMarker
 	}
 
