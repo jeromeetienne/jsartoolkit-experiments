@@ -245,7 +245,7 @@ srcElement.play()
 	var multiMarker = new THREE.ArMultiMarker()
 	multiMarker.arMarkers = arMarkers
 	multiMarker.originObject.rotateX(-Math.PI/2)
-	multiMarker.originObject.position.y = 5
+	multiMarker.originObject.position.y = 5 
 	var geometry	= new THREE.PlaneGeometry(40,40);
 	var material	= new THREE.MeshBasicMaterial({
 		map :  new THREE.TextureLoader().load( '../textures/UV_Grid_Sm.jpg', function onLoaded(texture){

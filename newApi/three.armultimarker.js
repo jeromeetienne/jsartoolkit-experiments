@@ -23,7 +23,6 @@ THREE.ArMultiMarker = function(options){
 
 THREE.ArMultiMarker.prototype.update = function () {
 	// average the world position of each originObject
-	
 	var isVisible = false
 	var visibleCount = 0
 	

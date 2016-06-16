@@ -13,39 +13,44 @@ THREE.ArMarker = function(){
 	this.originObject = new THREE.Object3D();
 	this.originObject.name = 'marker-origin'
 	this.markerObject.add(this.originObject)
+	
+	
+	this._positionSpeed = new THREE.Vector3()
 }
 
 THREE.ArMarker.prototype.update = function (arContext) {
 	var arController = arContext.controller
+	var markerNum = arController.getMarkerNum();
 
-	// see if this marker has been found by arContext
-	var foundMarkerInfo = null
-	var nFoundMarkers = arController.getMarkerNum();
-	for(var i = 0; i < nFoundMarkers; i++){
-		var markerInfo = arController.getMarker(i);
-		if( markerInfo.idMatrix === this.markerInfoId ){
-			foundMarkerInfo = markerInfo
+	var markerInfo = null
+	for(var markerIndex = 0; markerIndex < markerNum; markerIndex++){
+		var tmpInfo = arController.getMarker(markerIndex);
+		// http://www.artoolworks.com/support/doc/artoolkit5/apiref/ar_h/index.html#//apple_ref/c/tdef/ARMarkerInfo
+// console.log('tmpInfo', tmpInfo.idMatrix)
+
+		if( tmpInfo.idMatrix === this.markerInfoId ){
+			markerInfo = tmpInfo
 			break;
 		}
 	}
-	
-	// store the previous visibility
 	var wasVisible = this.markerObject.visible
+
 	// objects visible IIF there is a marker
 	this.markerObject.visible = markerInfo !== null ? true : false
 
-	// if this marker has not been found, return now
-	if( foundMarkerInfo === null )	return
+	if( markerInfo === null )	return
 
-	// if it wasnt visible, get initial matrix, else get a cont-matrix
+// console.log('tmpInfo', tmpInfo.id, this.markerInfoId)
+
 	if( wasVisible === false ) {
 		arController.getTransMatSquare(markerIndex, this.markerWidth, this.markerObject.userData.markerMatrix);
 	} else {
 		arController.getTransMatSquareCont(markerIndex, this.markerWidth, this.markerObject.userData.markerMatrix, this.markerObject.userData.markerMatrix);
 	}
-	// transform the jsartoolkit matrix into webgl matrix
 	arController.transMatToGLMat(this.markerObject.userData.markerMatrix, this.markerObject.matrix.elements);
 	
 	// refeed position/quaternion/scale
 	this.markerObject.matrix.decompose(this.markerObject.position, this.markerObject.quaternion, this.markerObject.scale )
+	
+	
 };

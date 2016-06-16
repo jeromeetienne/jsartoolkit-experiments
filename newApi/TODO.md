@@ -1,5 +1,19 @@
-- make a canvas with the idMarker on it
+- DONE make a canvas with the idMarker on it
 
+# motion prediction
+- we get the pose of the marker periodically
+- so we know when we receive the image
+- then we get the pose from the image with the marker detection
+- we got a serie of {timeStamp, pose} at regular interval
+
+```
+currentTimeStamp = Date.now()
+deltaTime = currentTimeStamp - detectionTimeStamp
+currentPosition = detectionPosition + deltaTime * detectionSpeed
+
+// for angular, prediction . See pose-predictor.js
+// https://github.com/borismus/webvr-polyfill/blob/master/src/sensor-fusion/pose-predictor.js
+```
 
 # Improvement
 - make tweening on ar marker

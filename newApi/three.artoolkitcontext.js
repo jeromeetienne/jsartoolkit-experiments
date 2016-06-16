@@ -1,9 +1,12 @@
 THREE.ArtoolkitContext = function(width, height, camera, debugEnabled, onReady){
 	var _this = this
+
 	this.controller = null
 	this.debugEnabled = debugEnabled
 	this.ready = false
-	
+
+	this.lastDetectionTimeStamp = null
+
 	// TODO put that in a function init
 	var cameraParamsUrl = '../data/camera_para.dat'
 	var cameraParameters = new ARCameraParam(cameraParamsUrl, function() {
@@ -28,6 +31,7 @@ THREE.ArtoolkitContext = function(width, height, camera, debugEnabled, onReady){
 }
 
 THREE.ArtoolkitContext.prototype.update = function (srcElement) {
+	this.lastDetectionTimeStamp = ( performance || Date ).now();
 	this.controller.detectMarker(srcElement);
 
 	if( this.debugEnabled  )	this.controller.debugDraw();	

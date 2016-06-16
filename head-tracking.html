@@ -251,14 +251,14 @@
 			}
 
 			// load kanji pattern
-			arController.loadMarker('Data/patt.kanji', function(markerId) {
+			arController.loadMarker('data/patt.kanji', function(markerId) {
 				var markerWidth = 1
 				var markerTracker = arController.trackPatternMarkerId(markerId, markerWidth);
 				console.log('kanji marker', markerTracker)
 			});
 	
 			// load hiro pattern
-			arController.loadMarker('Data/patt.hiro', function(markerId) {
+			arController.loadMarker('data/patt.hiro', function(markerId) {
 				var markerWidth = 1
 				var markerTracker = arController.trackPatternMarkerId(markerId, markerWidth);
 				console.log('hiro marker', markerTracker)
