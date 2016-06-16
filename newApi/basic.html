@@ -87,12 +87,16 @@
 		var sourceType = 'video'
 		// var url = '../videos/output_4.mp4';
 		var url = '../videos/VID_20160503_165602.mp4'
+		var url = '../videos/VID_20160503_165602-640x480.mp4'
 		// var url = '../videos/headtracking.mp4'
+		// var url = '../videos/me-marker-cube.mp4'
 		var srcElement = THREE.ArSource.initVideo(url, function(){
 			onSourceImageReady(srcElement.width, srcElement.height)
 		})
-		srcElement.playbackRate = 0.5
+		srcElement.playbackRate = 0.1
 		srcElement.volume = 0
+		// srcElement.autoplay = true
+		// srcElement.controls =true
 		document.body.appendChild(srcElement)
 	}else {
 		switchSource('video')
@@ -121,7 +125,7 @@
 
 	// init renderer
 	var renderer	= new THREE.WebGLRenderer({
-		antialias	: true,
+		antialias: true,
 		alpha: true
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
@@ -131,6 +135,9 @@
 	renderer.domElement.style.top = '0px'
 	renderer.domElement.style.left = '0px'
 	document.body.appendChild( renderer.domElement );
+
+document.body.appendChild(srcElement)
+srcElement.play()
 
 	// array of functions for the rendering loop
 	var onRenderFcts= [];
@@ -218,28 +225,29 @@
 	
 	var arMarkers = []
 	
-	var markerUnknown = initMarker(-1, 'torusknot')
+	// var markerUnknown = initMarker(-1, 'torusknot')
+	// arMarkers.push( markerUnknown );
 	// markerUnknown.originObject.position.y = 1
-	arMarkers.push( markerUnknown );
 	
 	var markerLeft = initMarker( 1, 'octahedron')
 	arMarkers.push( markerLeft )
-	markerLeft.originObject.position.x = 3.15
-	markerLeft.originObject.position.z = 1
+	markerLeft.originObject.position.x =  3.8
+	markerLeft.originObject.position.y = -0.1
+	// markerLeft.originObject.position.z = 1
 	
 	var markerMiddle = initMarker( 2, 'torusknot')
 	arMarkers.push( markerMiddle )
-	markerMiddle.originObject.position.x = 1
-	markerMiddle.originObject.position.z = 1
+	// markerMiddle.originObject.position.z = 1
 
 	var markerRight = initMarker( 0, 'cylinder')
 	arMarkers.push( markerRight )
 	markerRight.originObject.position.x = -3.3
-	markerRight.originObject.position.z = 0.2
+	markerRight.originObject.position.y = -0.2
+	// markerRight.originObject.position.z =  1
 	
 	var multiMarker = new THREE.ArMultiMarker()
 	multiMarker.arMarkers = arMarkers
-	multiMarker.originObject.lookAt(new THREE.Vector3(0,1,0))
+	// multiMarker.originObject.lookAt(new THREE.Vector3(0,1,0))
 	multiMarker.originObject.position.y = 5
 	// var geometry	= new THREE.TorusKnotGeometry(1,0.1,32,32);
 	// var material	= new THREE.MeshNormalMaterial(); 
@@ -264,6 +272,7 @@
 		arMarker.markerInfoId = markerInfoId	// FIXME hardcoded for kanji
 		scene.add(arMarker.markerObject);
 
+return arMarker
 		// add a torus knot	
 		var geometry	= new THREE.CubeGeometry(1,1,1);
 		var material	= new THREE.MeshNormalMaterial({
@@ -323,9 +332,6 @@
 	});
 	var seethruPlane = new THREE.Mesh(geometry, material);
 	scene.add(seethruPlane);
-
-
-
 
 	material.map = new THREE.VideoTexture( video );
 	material.map.minFilter = THREE.NearestFilter;

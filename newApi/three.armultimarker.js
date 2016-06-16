@@ -1,4 +1,11 @@
-THREE.ArMultiMarker = function(){
+THREE.ArMultiMarker = function(options){
+	// handle options
+	options = options || {}
+	this.options = {}
+	this.options.smoothingEnabled = options.smoothingEnabled !== undefined ? options.smoothingEnabled : true
+	this.options.smoothingFactor = options.smoothingFactor !== undefined ? options.smoothingFactor : 0.7
+	
+	
 	this.arMarkers = []
 	// create the marker Root
 	this.markerObject = new THREE.Object3D();
@@ -38,14 +45,13 @@ THREE.ArMultiMarker.prototype.update = function () {
 	averagedPosition.multiplyScalar(1/visibleCount)
 
 	// set marker position
-	var shouldSmooth = true
-	if( shouldSmooth === false ){
+	if( this.options.smoothingEnabled === false ){
 		this.markerObject.position.copy(averagedPosition)
 	}else{
-		var smoothFactor = 0.95
+		var smoothingFactor = this.options.smoothingFactor
 		this.markerObject.position
-			.multiplyScalar(smoothFactor)
-			.add(averagedPosition.clone().multiplyScalar(1-smoothFactor))
+			.multiplyScalar(smoothingFactor)
+			.add(averagedPosition.clone().multiplyScalar(1-smoothingFactor))
 	}
 
 

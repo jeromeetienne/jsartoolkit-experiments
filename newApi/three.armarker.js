@@ -26,7 +26,7 @@ THREE.ArMarker.prototype.update = function (arContext) {
 	for(var markerIndex = 0; markerIndex < markerNum; markerIndex++){
 		var tmpInfo = arController.getMarker(markerIndex);
 		// http://www.artoolworks.com/support/doc/artoolkit5/apiref/ar_h/index.html#//apple_ref/c/tdef/ARMarkerInfo
-// console.log('tmpInfo', tmpInfo)
+// console.log('tmpInfo', tmpInfo.idMatrix)
 
 		if( tmpInfo.idMatrix === this.markerInfoId ){
 			markerInfo = tmpInfo
