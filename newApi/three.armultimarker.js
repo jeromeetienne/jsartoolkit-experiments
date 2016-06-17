@@ -21,7 +21,7 @@ THREE.ArMultiMarker = function(options){
 	this.markerObject.add(this.smoothedOriginObject)
 }
 
-THREE.ArMultiMarker.prototype.update = function () {
+THREE.ArMultiMarker.prototype.updatePose = function () {
 	// average the world position of each originObject
 	var isVisible = false
 	var visibleCount = 0

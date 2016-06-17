@@ -5,20 +5,14 @@ THREE.ArtoolkitContext = function(width, height, camera, debugEnabled, onReady){
 	this.debugEnabled = debugEnabled
 	this.ready = false
 
-	this.lastDetectionTimeStamp = null
+	this.detectionDate = null
 
 	// TODO put that in a function init
 	var cameraParamsUrl = '../data/camera_para.dat'
 	var cameraParameters = new ARCameraParam(cameraParamsUrl, function() {
 	
 		_this.controller = new ARController(width, height, cameraParameters);
-		if( _this.debugEnabled  ){
-			_this.controller.debugSetup();
-			// _this.controller.canvas.style.position = 'absolute'
-			// _this.controller.canvas.style.top = '0px'
-			// _this.controller.canvas.style.left = '0px'
-			// _this.controller.canvas.style.opacity = '0.2'
-		}
+		if( _this.debugEnabled  )	_this.controller.debugSetup();
 
 		// put that elsewhere
 		var projectionMatrix = _this.controller.getCameraMatrix();
@@ -30,8 +24,8 @@ THREE.ArtoolkitContext = function(width, height, camera, debugEnabled, onReady){
 	})
 }
 
-THREE.ArtoolkitContext.prototype.update = function (srcElement) {
-	this.lastDetectionTimeStamp = ( performance || Date ).now();
+THREE.ArtoolkitContext.prototype.detect = function (srcElement) {
+	this.detectionDate = performance.now();
 	this.controller.detectMarker(srcElement);
 
 	if( this.debugEnabled  )	this.controller.debugDraw();	

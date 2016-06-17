@@ -7,6 +7,7 @@
 <script src="three.artoolkitcontext.js"></script>
 <script src="three.arsource.js"></script>
 <script src="three.armarker.js"></script>
+<script src="three.armarkerprediction.js"></script>
 <script src="three.armultimarker.js"></script>
 <style>
 	body {
@@ -205,19 +206,19 @@ srcElement.play()
 		})
 	}
 
-	onRenderFcts.push(function(){
+	setInterval(function(){
 		if( arContext === null ) return
 		if( arContext.ready !== true )	return
 		
-		arContext.update(srcElement)
-				
+		arContext.detect(srcElement)
+	
 		// update markerRoot with the found markers
 		arMarkers.forEach(function(arMarker){
-			arMarker.update(arContext)
+			arMarker.updatePose(arContext)
 		})
 		
-		if( window.multiMarker ) multiMarker.update()
-	})
+		if( window.multiMarker ) multiMarker.updatePose()
+	}, 1000 / 30)
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		configure ar markers
@@ -264,6 +265,7 @@ srcElement.play()
 	function buildDebugArMarker(markerInfoId){		
 		// create the marker Root
 		var arMarker = new THREE.ArMarker();
+		var arMarker = new THREE.ArMarkerPrediction();
 		arMarker.markerInfoId = markerInfoId
 		scene.add(arMarker.markerObject);
 
@@ -356,7 +358,7 @@ srcElement.play()
 		seethruPlane.scale.x = seethruPlane.scale.y * camera.aspect
 		
 		// to mirror the video in x
-		// seethruPlane.scale.x *= -1
+		seethruPlane.scale.y *= -1
 	})
 
 	window.addEventListener('resize', function(){

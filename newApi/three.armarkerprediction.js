@@ -1,4 +1,9 @@
-THREE.ArMarker = function(){
+/**
+ * Handle a marker from jsartoolkit
+ * - markerObject = object3d excatly on the marker
+ * - originObject = the origin of the scene attached to this marker
+ */
+THREE.ArMarkerPrediction = function(){
 	this.markerWidth = 1
 	this.markerInfoId = -1
 
@@ -13,9 +18,34 @@ THREE.ArMarker = function(){
 	this.originObject = new THREE.Object3D();
 	this.originObject.name = 'marker-origin'
 	this.markerObject.add(this.originObject)
+
+	this._lastDetectionDate = null
+	this._lastPosition = new THREE.Vector3()
 }
 
-THREE.ArMarker.prototype.updatePose = function (arContext) {
+THREE.ArMarkerPrediction.prototype.updateOrigin = function(arContext){
+	var arController = arContext.controller
+
+	var deltaTime = performance.now() - arContext.detectionDate
+
+	if( this._lasDate === null ){
+		return
+	}
+
+	var currentPosition = new THREE.Vector3()
+// 	currentPosition.
+// currentPosition = detectionPosition + deltaTime * detectionSpeed
+
+
+	this._lastDetectionDate = arContext.detectionDate
+	this._lastPosition.copy( this.markerObject.position )
+}
+
+
+/**
+ * update this marker pose if it is found in last arContext detection
+ */
+THREE.ArMarkerPrediction.prototype.updatePose = function (arContext) {
 	var arController = arContext.controller
 
 	// see if this marker has been found by arContext

@@ -1,5 +1,5 @@
 - DONE make a canvas with the idMarker on it
-
+- TODO rename markerObject in markerRoot
 # motion prediction
 - we get the pose of the marker periodically
 - so we know when we receive the image
