@@ -19,8 +19,10 @@ THREE.ArMarkerPrediction = function(){
 	this.originObject.name = 'marker-origin'
 	this.markerObject.add(this.originObject)
 
+	// initialisation for motion prediction
 	this._lastDetectionDate = null
-	this._lastPosition = new THREE.Vector3()
+	this._lastDetectedPosition = new THREE.Vector3()
+	this._lastDetectedSpeed = new THREE.Vector3()
 }
 
 THREE.ArMarkerPrediction.prototype.updateOrigin = function(arContext){
@@ -29,26 +31,16 @@ THREE.ArMarkerPrediction.prototype.updateOrigin = function(arContext){
 	// if no previous detection has been don in arContext, leave now
 	if( arContext.detectionDate === null )	return
 
-	var deltaTime = performance.now() - arContext.detectionDate
 
-
-	var detectionPosition = this.markerObject.position
-
-	// TODO how to compute the speed
-	// where
-	var detectionSpeed = new THREE.Vector3()
-	
-
-	var currentPosition = new THREE.Vector3()
-		.copy(detectionPosition)
-		.multiply( detectionSpeed.clone().multiplyScalar(deltaTime) )
-
-// currentPosition = detectionPosition + deltaTime * detectionSpeed
-
-
-
-	this._lastDetectionDate = arContext.detectionDate
-	this._lastPosition.copy( this.markerObject.position )
+	// currentPosition = lastDetectedPosition + deltaTime * lastDetectedSpeed
+	var deltaTime = (performance.now() - arContext.detectionDate) /1000
+	var deltaPosition = this._lastDetectedSpeed.clone().multiplyScalar(deltaTime)
+	var currentWorldPosition = new THREE.Vector3()
+		.copy(this.markerObject.position)
+		.add( deltaPosition )
+	// update originObject position
+	this.originObject.position.copy(currentWorldPosition)
+		.sub(this.markerObject.position)
 }
 
 
@@ -88,4 +80,22 @@ THREE.ArMarkerPrediction.prototype.updatePose = function (arContext) {
 
 	// refeed position/quaternion/scale from matrix
 	this.markerObject.matrix.decompose(this.markerObject.position, this.markerObject.quaternion, this.markerObject.scale )
+// return
+	// update information about motion prediction
+	if( this._lastDetectionDate !== null && true){
+		// detectedSpeed = (marker.position - lastDetectedPosition) / deltaTime
+		var deltaTime = (performance.now() - arContext.detectionDate) / 1000
+		var newSpeed = new THREE.Vector3().copy( this.markerObject.position )
+			.sub( this._lastDetectedPosition )
+			.multiplyScalar( 1 / deltaTime )
+		var smoothFactor = 0.05
+		this._lastDetectedSpeed
+			.multiplyScalar(1 - smoothFactor)
+			.add( newSpeed.multiplyScalar(smoothFactor) )
+	}else{
+		// if it is the first detection, assume the speed is 0
+		this._lastDetectedSpeed.set( 0,0,0 )
+	}
+	this._lastDetectedPosition.copy( this.markerObject.position )
+	this._lastDetectionDate = arContext.detectionDate
 }

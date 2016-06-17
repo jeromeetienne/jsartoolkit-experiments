@@ -218,7 +218,16 @@ srcElement.play()
 		})
 		
 		if( window.multiMarker ) multiMarker.updatePose()
-	}, 1000 / 30)
+	}, 1000 / 10)
+	
+	onRenderFcts.push(function(){
+		if( arContext === null ) return
+		if( arContext.ready !== true )	return
+		
+		arMarkers.forEach(function(arMarker){
+			arMarker.updateOrigin(arContext)
+		})
+	})
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		configure ar markers
@@ -230,41 +239,41 @@ srcElement.play()
 	// arMarkers.push( markerUnknown );
 	// markerUnknown.originObject.position.y = 1
 	
-	var markerLeft = buildDebugArMarker(1)
-	arMarkers.push( markerLeft )
-	markerLeft.originObject.position.x =  3.8
-	markerLeft.originObject.position.y = -0.1
+	// var markerLeft = buildDebugArMarker(1)
+	// arMarkers.push( markerLeft )
+	// markerLeft.originObject.position.x =  3.8
+	// markerLeft.originObject.position.y = -0.1
 	
 	var markerMiddle = buildDebugArMarker(2)
 	arMarkers.push( markerMiddle )
 
-	var markerRight = buildDebugArMarker(0)
-	arMarkers.push( markerRight )
-	markerRight.originObject.position.x = -3.3
-	markerRight.originObject.position.y = -0.2
+	// var markerRight = buildDebugArMarker(0)
+	// arMarkers.push( markerRight )
+	// markerRight.originObject.position.x = -3.3
+	// markerRight.originObject.position.y = -0.2
 	
-	var multiMarker = new THREE.ArMultiMarker()
-	multiMarker.arMarkers = arMarkers
-	multiMarker.originObject.rotateX(-Math.PI/2)
-	multiMarker.originObject.position.y = 5 
-	var geometry	= new THREE.PlaneGeometry(40,40);
-	var material	= new THREE.MeshBasicMaterial({
-		map :  new THREE.TextureLoader().load( '../textures/UV_Grid_Sm.jpg', function onLoaded(texture){
-			texture.wrapS = THREE.RepeatWrapping;
-			texture.wrapT = THREE.RepeatWrapping;
-			texture.repeat.set(4, 4);
-		}),
-		side : THREE.DoubleSide,
-		opacity: 0.5,
-		transparent: true,
-	}); 
-	var torus	= new THREE.Mesh( geometry, material );
-	multiMarker.originObject.add( torus );
-	scene.add(multiMarker.markerObject)
+	// var multiMarker = new THREE.ArMultiMarker()
+	// multiMarker.arMarkers = arMarkers
+	// multiMarker.originObject.rotateX(-Math.PI/2)
+	// multiMarker.originObject.position.y = 5 
+	// var geometry	= new THREE.PlaneGeometry(40,40);
+	// var material	= new THREE.MeshBasicMaterial({
+	// 	map :  new THREE.TextureLoader().load( '../textures/UV_Grid_Sm.jpg', function onLoaded(texture){
+	// 		texture.wrapS = THREE.RepeatWrapping;
+	// 		texture.wrapT = THREE.RepeatWrapping;
+	// 		texture.repeat.set(4, 4);
+	// 	}),
+	// 	side : THREE.DoubleSide,
+	// 	opacity: 0.5,
+	// 	transparent: true,
+	// }); 
+	// var torus	= new THREE.Mesh( geometry, material );
+	// multiMarker.originObject.add( torus );
+	// scene.add(multiMarker.markerObject)
 	
 	function buildDebugArMarker(markerInfoId){		
 		// create the marker Root
-		var arMarker = new THREE.ArMarker();
+		// var arMarker = new THREE.ArMarker();
 		var arMarker = new THREE.ArMarkerPrediction();
 		arMarker.markerInfoId = markerInfoId
 		scene.add(arMarker.markerObject);
@@ -293,7 +302,8 @@ srcElement.play()
 		if( geometry instanceof THREE.CubeGeometry ){
 			cube.position.z	= geometry.parameters.height/2
 		}
-		arMarker.markerObject.add( cube );
+		// arMarker.markerObject.add( cube );
+		arMarker.originObject.add( cube );
 
 		// // add a torus knot	
 		// var geometry	= new THREE.CubeGeometry(1,1,1);
