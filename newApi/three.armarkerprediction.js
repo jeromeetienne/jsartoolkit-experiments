@@ -26,15 +26,25 @@ THREE.ArMarkerPrediction = function(){
 THREE.ArMarkerPrediction.prototype.updateOrigin = function(arContext){
 	var arController = arContext.controller
 
+	// if no previous detection has been don in arContext, leave now
+	if( arContext.detectionDate === null )	return
+
 	var deltaTime = performance.now() - arContext.detectionDate
 
-	if( this._lasDate === null ){
-		return
-	}
+
+	var detectionPosition = this.markerObject.position
+
+	// TODO how to compute the speed
+	// where
+	var detectionSpeed = new THREE.Vector3()
+	
 
 	var currentPosition = new THREE.Vector3()
-// 	currentPosition.
+		.copy(detectionPosition)
+		.multiply( detectionSpeed.clone().multiplyScalar(deltaTime) )
+
 // currentPosition = detectionPosition + deltaTime * detectionSpeed
+
 
 
 	this._lastDetectionDate = arContext.detectionDate
