@@ -15,6 +15,10 @@ THREE.ArMarker = function(){
 	this.markerObject.add(this.originObject)
 }
 
+/**
+ * update the pose of the ar marker, based on arContext detectiong
+ * @param {THREE.ARContext} arContext [description]
+ */
 THREE.ArMarker.prototype.updatePose = function (arContext) {
 	var arController = arContext.controller
 

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<script src="../../vendor/three.js/build/three.js"></script>
+<script src="../../vendor/three.js/examples/js/libs/stats.min.js"></script>
+<script src="../../vendor/three.js/examples/js/controls/OrbitControls.js"></script>
+<script src="../../vendor/jsartoolkit/artoolkit.debug.js"></script>
+<script src="../../vendor/jsartoolkit/artoolkit.api.js"></script>
+<script src="../three.artoolkitcontext.js"></script>
+<script src="../three.artoolkitutils.js"></script>
+<script src="../three.armarker.js"></script>
+<script src="../three.armarkerprediction.js"></script>
+<script src="../three.armultimarker.js"></script>
+
+
+<script src="arScenes/arScene-generic.js"></script>
+<script src="arScenes/arScene-headtrackingVideo.js"></script>
+<script src="arScenes/arScene-phoneVideo.js"></script>
+<script src="arScenes/arScene-roomspaceVideo.js"></script>
+<script src="arScenes/arScene-webcamKanji.js"></script>
+<style>
+	body {
+		margin : 0px;
+		/*width: 100%;*/
+	}
+</style>
+<div style='position:absolute; top: 10px; width: 100%; text-align: center; font-family: Monospace; font-weight: bold; padding;color:grey; z-index: 1000;'>
+	Example of 
+	<a href="https://github.com/artoolkit/jsartoolkit5" target="_blank">jsARToolKit</a> 
+	by <a href="https://twitter.com/jerome_etienne" target="_blank">@jerome_etienne</a>
+	with <a href="https://github.com/mrdoob/three.js" target="_blank">three.js</a>
+	<br/>
+	<a href="https://github.com/jeromeetienne/jsartoolkit-example" target="_blank">github repo</a>
+	- Toggle :
+	<a href='javascript:void(0)' onclick='toggleDebugDetect()' style='color: grey'>Debug Detection</a> /
+	<a href='javascript:void(0)' onclick='toggleDebugCamera()' style='color: grey'>Debug Camera</a>
+	<br/>
+</div>
+<body><script>
+
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//		Code Separator
+	//////////////////////////////////////////////////////////////////////////////
+
+	var urlParameters = {}	
+	urlParameters.debugDetectEnabled = getQueryVariable('debugDetectEnabled') === "true" ? true : false
+	urlParameters.debugCameraEnabled = getQueryVariable('debugCameraEnabled') === "true" ? true : false
+	urlParameters.sceneName = getQueryVariable('sceneName') ? getQueryVariable('sceneName') : 'generic'
+
+	window.toggleDebugDetect = function toggleDebugDetect(){
+		var newParams = JSON.parse(JSON.stringify(urlParameters))
+		newParams.debugDetectEnabled = urlParameters.debugDetectEnabled ? false : true
+		reloadOptions(newParams)		
+	}
+	window.toggleDebugCamera = function toggleDebugCamera(){
+		var newParams = JSON.parse(JSON.stringify(urlParameters))
+		newParams.debugCameraEnabled = urlParameters.debugCameraEnabled ? false : true
+		reloadOptions(newParams)		
+	}
+
+	function getQueryVariable(variable) {
+		var query = window.location.hash.substring(1);
+		var vars = query.split('&');
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split('=');
+			if (decodeURIComponent(pair[0]) == variable) {
+				return decodeURIComponent(pair[1]);
+			}
+		}
+		return undefined
+	}	
+        function reloadOptions(options){
+                var queryString = ''
+		Object.keys(options).forEach(function(key){
+			var value = options[key]
+			if( queryString.length > 0 )	queryString += '&'
+			queryString += encodeURIComponent(key) + '=' + encodeURIComponent(value)
+		})
+                location.hash   = '#'+queryString
+                location.reload()                
+        }
+
+	//////////////////////////////////////////////////////////////////////////////
+	//		Code Separator
+	//////////////////////////////////////////////////////////////////////////////
+
+	var selectElement = document.createElement('select')
+	document.body.appendChild(selectElement)
+	selectElement.style.position = 'absolute'
+	selectElement.style.top = '60px'
+	selectElement.style.right = '0px'
+	Object.keys(arScenes).forEach(function(sceneName){
+		var optionElement = document.createElement("option");
+		selectElement.appendChild(optionElement)
+		optionElement.value = sceneName
+		optionElement.text = sceneName
+	})
+	selectElement.value = urlParameters.sceneName
+	
+	selectElement.addEventListener('change', function(){
+		var newParams = JSON.parse(JSON.stringify(urlParameters))
+		newParams.sceneName = selectElement.value
+		reloadOptions(newParams)		
+
+	})
+
+	//////////////////////////////////////////////////////////////////////////////
+	//		Code Separator
+	//////////////////////////////////////////////////////////////////////////////
+	var currentArScene = arScenes[urlParameters.sceneName]
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// init renderer
+	var renderer	= new THREE.WebGLRenderer({
+		antialias: true,
+		alpha: true
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+	// renderer.setSize( 1280/2, 960/2 );
+	renderer.setSize( 640, 480 );
+	renderer.domElement.style.position = 'absolute'
+	renderer.domElement.style.top = '0px'
+	renderer.domElement.style.left = '0px'
+	document.body.appendChild( renderer.domElement );
+
+	// array of functions for the rendering loop
+	var onRenderFcts= [];
+
+	// init scene and camera
+	var scene	= new THREE.Scene();
+
+	//////////////////////////////////////////////////////////////////////////////
+	//		stats.js for rendering
+	//////////////////////////////////////////////////////////////////////////////
+	var statsRenderer = new Stats();
+	document.body.appendChild( statsRenderer.domElement );
+	statsRenderer.domElement.style.position = 'absolute'
+	statsRenderer.domElement.style.top = '0px'
+	statsRenderer.domElement.style.right = '0px'
+	statsRenderer.domElement.title = 'stats about 3d rendering'
+	
+	var statsDetection = new Stats();
+	document.body.appendChild( statsDetection.domElement );
+	statsDetection.domElement.style.position = 'absolute'
+	statsDetection.domElement.style.bottom = '0px'
+	statsDetection.domElement.style.right = '0px'
+	statsDetection.domElement.title = 'stats about marker detection'
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// Create a camera and a marker root object for your Three.js scene.
+	var camera = new THREE.Camera();
+	if( urlParameters.debugCameraEnabled ){
+		camera.updateProjectionMatrix = function(){} // required by THREE.CameraHelper
+	}
+	scene.add(camera);
+	
+	if( urlParameters.debugCameraEnabled ){
+		var cameraHelper = new THREE.CameraHelper(camera)
+		scene.add(cameraHelper)
+
+		// Create a three.js camera.
+		var cameraDebug = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+		scene.add(cameraDebug);
+		cameraDebug.position.x = -2
+		cameraDebug.position.z = -10
+		cameraDebug.lookAt(scene.position)
+
+		var controls = new THREE.OrbitControls(cameraDebug)		
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	//		Code Separator
+	//////////////////////////////////////////////////////////////////////////////
+	var arMarkers = []
+	currentArScene.setupMarkers()
+
+	function buildTorusCube(){
+		// add a torus knot	
+		var geometry	= new THREE.CubeGeometry(1,1,1);
+		var material	= new THREE.MeshNormalMaterial({
+			transparent : true,
+			opacity: 0.5,
+			side: THREE.DoubleSide
+		}); 
+		var mesh	= new THREE.Mesh( geometry, material );
+		mesh.position.z	= geometry.parameters.height/2
+		
+		var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
+		var material	= new THREE.MeshNormalMaterial(); 
+		var torus	= new THREE.Mesh( geometry, material );
+		mesh.add( torus );
+		
+		onRenderFcts.push(function(){
+			torus.rotation.x += 0.1
+		})
+		return mesh
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//		Code Separator
+	//////////////////////////////////////////////////////////////////////////////
+	var arContext = null
+	var srcElement = currentArScene.setupArContext(urlParameters.debugDetectEnabled, function(arContextNew){
+		arContext = arContextNew
+
+		console.assert(arContext.ready === true)
+		
+		arContext.setupCamera(camera)
+		
+		currentArScene.setupDetection(arContext)
+	})
+	document.body.appendChild(srcElement)
+	
+	//////////////////////////////////////////////////////////////////////////////
+	//		Code Separator
+	//////////////////////////////////////////////////////////////////////////////
+	
+	
+	// detect markers periodically
+	setInterval(function(){
+		if( arContext === null ) return
+		if( arContext.ready !== true )	return
+
+		statsDetection.begin()
+		arContext.detect(srcElement)
+		statsDetection.end()
+
+		// update markerRoot with the found markers
+		arMarkers.forEach(function(arMarker){
+			arMarker.updatePose(arContext)
+		})
+	}, 1000 / 60)
+	
+	// update markers origin for ArMarkerPrediction
+	onRenderFcts.push(function(){
+		if( arContext === null ) return
+		if( arContext.ready !== true )	return
+
+		arMarkers.forEach(function(arMarker){
+			if( arMarker instanceof THREE.ArMarkerPrediction === false )	return
+			arMarker.updateOrigin(arContext)
+		})
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// render the scene
+	onRenderFcts.push(function(){
+		var renderingCamera = camera
+		
+		// handle debug camera
+		if( urlParameters.debugCameraEnabled ){
+			cameraHelper.update()
+			renderingCamera = cameraDebug
+		}
+
+		statsRenderer.end()
+		renderer.render( scene, renderingCamera )
+		statsRenderer.begin()
+	})
+
+	//////////////////////////////////////////////////////////////////////////////
+	//		animation loop
+	//////////////////////////////////////////////////////////////////////////////
+	var lastRender = 0;
+	function animate(timestamp) {
+		var delta = Math.min(timestamp - lastRender, 500);
+		lastRender = timestamp;
+		
+		// call each function for the rendering
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(delta)
+		})
+		
+		// Keep looping.
+		requestAnimationFrame(animate);
+	}
+	// Kick off animation loop.
+	requestAnimationFrame(animate);
+</script></body>

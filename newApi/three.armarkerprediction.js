@@ -88,10 +88,12 @@ THREE.ArMarkerPrediction.prototype.updatePose = function (arContext) {
 		var newSpeed = new THREE.Vector3().copy( this.markerObject.position )
 			.sub( this._lastDetectedPosition )
 			.multiplyScalar( 1 / deltaTime )
-		var smoothFactor = 0.05
-		this._lastDetectedSpeed
-			.multiplyScalar(1 - smoothFactor)
-			.add( newSpeed.multiplyScalar(smoothFactor) )
+		// var smoothFactor = 0.05
+		// this._lastDetectedSpeed
+		// 	.multiplyScalar(1 - smoothFactor)
+		// 	.add( newSpeed.multiplyScalar(smoothFactor) )
+		this._lastDetectedSpeed.copy(newSpeed)
+		
 	}else{
 		// if it is the first detection, assume the speed is 0
 		this._lastDetectedSpeed.set( 0,0,0 )
