@@ -12,6 +12,8 @@
 <script src="../three.ArMarkerMulti.js"></script>
 
 
+<script src="arScenes/arScene-armchairImage.js"></script>
+<script src="arScenes/arScene-cubeImage.js"></script>
 <script src="arScenes/arScene-generic.js"></script>
 <script src="arScenes/arScene-headtrackingVideo.js"></script>
 <script src="arScenes/arScene-phoneVideo.js"></script>
@@ -28,12 +30,14 @@
 	<a href="https://github.com/artoolkit/jsartoolkit5" target="_blank">jsARToolKit</a> 
 	by <a href="https://twitter.com/jerome_etienne" target="_blank">@jerome_etienne</a>
 	with <a href="https://github.com/mrdoob/three.js" target="_blank">three.js</a>
+	-
+	<a href="https://github.com/jeromeetienne/jsartoolkit-experiments" target="_blank">github repo</a>
 	<br/>
-	<a href="https://github.com/jeromeetienne/jsartoolkit-example" target="_blank">github repo</a>
-	- Toggle :
-	<a href='javascript:void(0)' onclick='toggleDebugDetect()' style='color: grey'>Debug Detection</a> /
-	<a href='javascript:void(0)' onclick='toggleDebugCamera()' style='color: grey'>Debug Camera</a>
+	ar scenes: <span id='arScenesLinks'></span>
 	<br/>
+		Debug :
+		<a href='javascript:void(0)' onclick='toggleDebugDetect()' style='color: grey'>detection</a> /
+		<a href='javascript:void(0)' onclick='toggleDebugCamera()' style='color: grey'>camera</a>
 </div>
 <body><script>
 
@@ -84,24 +88,24 @@
 	//		Code Separator
 	//////////////////////////////////////////////////////////////////////////////
 
-	var selectElement = document.createElement('select')
-	document.body.appendChild(selectElement)
-	selectElement.style.position = 'absolute'
-	selectElement.style.top = '60px'
-	selectElement.style.right = '0px'
-	Object.keys(arScenes).forEach(function(sceneName){
-		var optionElement = document.createElement("option");
-		selectElement.appendChild(optionElement)
-		optionElement.value = sceneName
-		optionElement.text = sceneName
-	})
-	selectElement.value = urlParameters.sceneName
-	
-	selectElement.addEventListener('change', function(){
-		var newParams = JSON.parse(JSON.stringify(urlParameters))
-		newParams.sceneName = selectElement.value
-		reloadOptions(newParams)		
+	Object.keys(arScenes).forEach(function(sceneName, sceneIndex){
+		var domElement = document.createElement("a");
+		domElement.innerHTML = sceneName
+		domElement.href = 'javascript:void(0)'
+		domElement.addEventListener('click', function(){			
+			var params = JSON.parse(JSON.stringify(urlParameters))
+			params.sceneName = sceneName
+			reloadOptions(params)		
+		})
 
+		var container = document.querySelector('#arScenesLinks')
+		if( sceneIndex !== 0 ){
+			var seperatorElement = document.createElement("span")
+			seperatorElement.innerHTML = ' - '
+			container.appendChild(seperatorElement)			
+		}
+
+		container.appendChild(domElement)	
 	})
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -139,16 +143,20 @@
 	document.body.appendChild( statsRenderer.domElement );
 	statsRenderer.domElement.style.position = 'absolute'
 	statsRenderer.domElement.style.top = '0px'
+	statsRenderer.domElement.style.left = ''
 	statsRenderer.domElement.style.right = '0px'
 	statsRenderer.domElement.title = 'stats about 3d rendering'
 	
 	var statsDetection = new Stats();
 	document.body.appendChild( statsDetection.domElement );
 	statsDetection.domElement.style.position = 'absolute'
+	statsDetection.domElement.style.top = ''
+	statsDetection.domElement.style.left = ''
 	statsDetection.domElement.style.bottom = '0px'
 	statsDetection.domElement.style.right = '0px'
 	statsDetection.domElement.title = 'stats about marker detection'
-	
+	statsDetection.setMode(1)
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Comments
 	//////////////////////////////////////////////////////////////////////////////////
@@ -262,9 +270,9 @@
 			renderingCamera = cameraDebug
 		}
 
-		statsRenderer.end()
+		statsRenderer.update()
+
 		renderer.render( scene, renderingCamera )
-		statsRenderer.begin()
 	})
 
 	//////////////////////////////////////////////////////////////////////////////

@@ -28,7 +28,6 @@ THREE.ArUtils.buildDebugArMarker = function (markerInfoId) {
 	context.fillText(markerInfoId, 0, 1)
 
 	// add a plane on the marker
-	var geometry	= new THREE.CubeGeometry(1,1,1);
 	var geometry	= new THREE.PlaneGeometry(1,1);
 	var material	= new THREE.MeshBasicMaterial({
 		map: new THREE.CanvasTexture( canvas ),
@@ -36,22 +35,9 @@ THREE.ArUtils.buildDebugArMarker = function (markerInfoId) {
 		opacity: 0.5,
 		side: THREE.DoubleSide
 	}); 
-	var cube	= new THREE.Mesh( geometry, material );
-	if( geometry instanceof THREE.CubeGeometry ){
-		cube.position.z	= geometry.parameters.height/2
-	}
-	// arMarker.markerObject.add( cube );
-	arMarker.originObject.add( cube );
-
-	// // add a torus knot	
-	// var geometry	= new THREE.CubeGeometry(1,1,1);
-	// var material	= new THREE.MeshNormalMaterial({
-	// 	transparent : true,
-	// 	opacity: 0.5,
-	// 	side: THREE.DoubleSide
-	// }); 
-	// var mesh	= new THREE.Mesh( geometry, material );
-	// arMarker.originObject.add( mesh );
+	var mesh	= new THREE.Mesh( geometry, material );
+	mesh.name	= 'plane'
+	arMarker.markerObject.add( mesh );
 
 	// return arMarker
 	return arMarker

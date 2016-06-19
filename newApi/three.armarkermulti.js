@@ -17,11 +17,8 @@ THREE.ArMarkerMulti = function(options){
 	this.originObject = new THREE.Object3D();
 	this.originObject.name = 'Origin object'
 	this.markerObject.add(this.originObject)
-
-	this.smoothedOriginObject = new THREE.Object3D();
-	this.smoothedOriginObject.name = 'Origin object'
-	this.markerObject.add(this.smoothedOriginObject)
 }
+
 THREE.ArMarkerMulti.prototype = Object.create( THREE.ArMarker.prototype );
 THREE.ArMarkerMulti.prototype.constructor = THREE.ArMarkerMulti;
 
@@ -47,10 +44,10 @@ THREE.ArMarkerMulti.prototype.updatePose = function () {
 	})
 	averagedPosition.multiplyScalar(1/visibleCount)
 
+	this.markerObject.position.copy(averagedPosition)
+
 	// set marker position
-	if( this.options.smoothingEnabled === false ){
-		this.markerObject.position.copy(averagedPosition)
-	}else{
+	if( this.options.smoothingEnabled === true ){
 		var smoothingFactor = this.options.smoothingFactor
 		this.markerObject.position
 			.multiplyScalar(smoothingFactor)

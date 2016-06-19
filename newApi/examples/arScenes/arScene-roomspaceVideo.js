@@ -17,34 +17,47 @@ arScenes['roomspaceVideo'] = {
 	        arContext.controller.setMatrixCodeType(artoolkit.AR_MATRIX_CODE_3x3_HAMMING63);			
 	},
 	setupMarkers : function(){
-		// var arMarker = THREE.ArUtils.buildDebugArMarker(0)
-		// arMarkers.push( arMarker )
-		// 
-		// var mesh = buildTorusCube()
-		// arMarker.originObject.add( mesh );
+		function buildMarker(markerInfoId){
+			var arMarker = THREE.ArUtils.buildDebugArMarker(markerInfoId)
 
-		var markerUnknown = THREE.ArUtils.buildDebugArMarker(-1, 'torusknot')
-		arMarkers.push( markerUnknown );
-		markerUnknown.originObject.position.y = 1
+			// add a plane on the marker
+			var geometry	= new THREE.PlaneGeometry(1,1);
+			var material	= new THREE.MeshBasicMaterial({
+				map: arMarker.markerObject.getObjectByName('plane').material.map,
+				transparent : true,
+				opacity: 0.5,
+				side: THREE.DoubleSide,
+				color: 'red'
+			}); 
+			var mesh	= new THREE.Mesh( geometry, material );
+			arMarker.originObject.add( mesh );
+
+			// arMarker.markerObject.getObjectByName('plane').visible = false
+
+			return arMarker
+		}
 		
-		var markerLeft = THREE.ArUtils.buildDebugArMarker(1)
+		// build each marker
+		var markerLeft = buildMarker(1)
 		arMarkers.push( markerLeft )
 		markerLeft.originObject.position.x =  3.8
-		markerLeft.originObject.position.y = -0.1
-		
-		var markerMiddle = THREE.ArUtils.buildDebugArMarker(2)
+		markerLeft.originObject.position.y =  1.9
+
+		var markerMiddle = buildMarker(2)
+		markerMiddle.originObject.position.y = 2
 		arMarkers.push( markerMiddle )
 
-		var markerRight = THREE.ArUtils.buildDebugArMarker(0)
+		var markerRight = buildMarker(0)
 		arMarkers.push( markerRight )
 		markerRight.originObject.position.x = -3.3
-		markerRight.originObject.position.y = -0.2
+		markerRight.originObject.position.y = 1.8
 
+		// handle the markerMulti
 		var multiMarker = new THREE.ArMarkerMulti()
 		arMarkers.push( multiMarker )
 		multiMarker.arMarkers = arMarkers
 		multiMarker.originObject.rotateX(-Math.PI/2)
-		multiMarker.originObject.position.y = 5 
+		multiMarker.originObject.position.y = 3 
 		var geometry	= new THREE.PlaneGeometry(40,40);
 		var material	= new THREE.MeshBasicMaterial({
 			map :  new THREE.TextureLoader().load( '../../textures/UV_Grid_Sm.jpg', function onLoaded(texture){
@@ -59,7 +72,5 @@ arScenes['roomspaceVideo'] = {
 		var torus	= new THREE.Mesh( geometry, material );
 		multiMarker.originObject.add( torus );
 		scene.add(multiMarker.markerObject)
-		
-		window.multiMarker = multiMarker
 	}
 }

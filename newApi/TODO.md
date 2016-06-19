@@ -1,4 +1,8 @@
 # TODO before release
+- fix the smoothing in ArMarkerMulti
+  - markerObject is the average of other originObject
+  - if smoothing is disabled, originObject is untouched
+  - if smoothing is enabled, originObject is smoothed
 - intrument the demo
   - enable/disable text output of the found markerInfo
 - clean up artoolkit.context contructor parameters
