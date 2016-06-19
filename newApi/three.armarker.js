@@ -2,6 +2,8 @@ THREE.ArMarker = function(){
 	this.markerWidth = 1
 	this.markerInfoId = -1
 
+	this.marContEnabled === true
+
 	// create the marker Root
 	this.markerObject = new THREE.Object3D();
 	this.markerObject.name = 'marker-root'
@@ -42,7 +44,7 @@ THREE.ArMarker.prototype.updatePose = function (arContext) {
 	if( foundMarkerInfo === null )	return
 
 	// if it wasnt visible, get initial matrix, else get a cont-matrix
-	if( wasVisible === false ) {
+	if( wasVisible === false || this.marContEnabled === false ) {
 		arController.getTransMatSquare(markerIndex, this.markerWidth, this.markerObject.userData.markerMatrix);
 	} else {
 		arController.getTransMatSquareCont(markerIndex, this.markerWidth, this.markerObject.userData.markerMatrix, this.markerObject.userData.markerMatrix);

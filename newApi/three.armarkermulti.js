@@ -1,4 +1,6 @@
-THREE.ArMultiMarker = function(options){
+THREE.ArMarkerMulti = function(options){
+	// call parent constructor
+	THREE.ArMarker.call( this );
 	// handle options
 	options = options || {}
 	this.options = {}
@@ -20,8 +22,10 @@ THREE.ArMultiMarker = function(options){
 	this.smoothedOriginObject.name = 'Origin object'
 	this.markerObject.add(this.smoothedOriginObject)
 }
+THREE.ArMarkerMulti.prototype = Object.create( THREE.ArMarker.prototype );
+THREE.ArMarkerMulti.prototype.constructor = THREE.ArMarkerMulti;
 
-THREE.ArMultiMarker.prototype.updatePose = function () {
+THREE.ArMarkerMulti.prototype.updatePose = function () {
 	// average the world position of each originObject
 	var isVisible = false
 	var visibleCount = 0

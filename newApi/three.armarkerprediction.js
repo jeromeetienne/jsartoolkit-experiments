@@ -4,6 +4,9 @@
  * - originObject = the origin of the scene attached to this marker
  */
 THREE.ArMarkerPrediction = function(){
+	// call parent constructor
+	THREE.ArMarker.call( this );
+	
 	this.markerWidth = 1
 	this.markerInfoId = -1
 
@@ -24,6 +27,8 @@ THREE.ArMarkerPrediction = function(){
 	this._lastDetectedPosition = new THREE.Vector3()
 	this._lastDetectedSpeed = new THREE.Vector3()
 }
+THREE.ArMarkerPrediction.prototype = Object.create( THREE.ArMarker.prototype );
+THREE.ArMarkerPrediction.prototype.constructor = THREE.ArMarkerPrediction;
 
 THREE.ArMarkerPrediction.prototype.updateOrigin = function(arContext){
 	var arController = arContext.controller

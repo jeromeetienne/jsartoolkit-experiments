@@ -7,7 +7,7 @@ var arScenes = arScenes || {}
 arScenes['roomspaceVideo'] = {
 	setupArContext : function(debugDetectEnabled, onArContextReady){
 		var url = '../../videos/VID_20160503_165602-640x480.mp4'
-		var srcElement = THREE.ArUtils.createArContextWithVideo(url, debugDetectEnabled, function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithVideo(url, debugDetectEnabled, function(arContext){
 			onArContextReady(arContext)
 		})
 		return srcElement		
@@ -40,7 +40,7 @@ arScenes['roomspaceVideo'] = {
 		markerRight.originObject.position.x = -3.3
 		markerRight.originObject.position.y = -0.2
 
-		var multiMarker = new THREE.ArMultiMarker()
+		var multiMarker = new THREE.ArMarkerMulti()
 		arMarkers.push( multiMarker )
 		multiMarker.arMarkers = arMarkers
 		multiMarker.originObject.rotateX(-Math.PI/2)

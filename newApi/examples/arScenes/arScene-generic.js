@@ -12,7 +12,7 @@ arScenes['generic'] = {
 		var type = 'image'
 		// var type = 'image'
 		if( type === 'webcam' ){
-			var srcElement = THREE.ArUtils.createArContextWithWebcam(debugDetectEnabled, function(arContext){
+			var srcElement = THREE.ArUtils.setupArContextWithWebcam(debugDetectEnabled, function(arContext){
 				onArContextReady(arContext)
 			})
 		}else if( type === 'image' ){
@@ -22,7 +22,7 @@ arScenes['generic'] = {
 			// var url = '../../images/kuva.jpg'
 			var url = '../../images/img.jpg'
 			var url = '../../images/marker_cube_hamming63.png'
-			var srcElement = THREE.ArUtils.createArContextWithImage(url, debugDetectEnabled, function(arContext){
+			var srcElement = THREE.ArUtils.setupArContextWithImage(url, debugDetectEnabled, function(arContext){
 				onArContextReady(arContext)
 			})
 		}else if( type === 'video' ){
@@ -30,7 +30,7 @@ arScenes['generic'] = {
 			var url = '../../videos/VID_20160503_165602-640x480.mp4'
 			// var url = '../../videos/headtracking.mp4'
 			// var url = '../../videos/me-marker-cube.mp4'
-			var srcElement = THREE.ArUtils.createArContextWithVideo(url, debugDetectEnabled, function(arContext){
+			var srcElement = THREE.ArUtils.setupArContextWithVideo(url, debugDetectEnabled, function(arContext){
 				onArContextReady(arContext)
 			})
 		}else {

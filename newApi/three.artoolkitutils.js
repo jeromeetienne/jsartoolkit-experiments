@@ -63,7 +63,7 @@ THREE.ArUtils.buildDebugArMarker = function (markerInfoId) {
 
 
 
-THREE.ArUtils.createArContextWithVideo = function(url, debugDetectEnabled, onReady){
+THREE.ArUtils.setupArContextWithVideo = function(url, debugDetectEnabled, onReady){
 	var srcElement = document.createElement('video');
 	srcElement.src = url
 	srcElement.autoplay = true;
@@ -89,7 +89,7 @@ THREE.ArUtils.createArContextWithVideo = function(url, debugDetectEnabled, onRea
 //		Code Separator
 //////////////////////////////////////////////////////////////////////////////
 
-THREE.ArUtils.createArContextWithImage = function(url, debugDetectEnabled, onReady){
+THREE.ArUtils.setupArContextWithImage = function(url, debugDetectEnabled, onReady){
 	var srcElement = document.createElement('img')
 	srcElement.src = url
 	srcElement.width = 640
@@ -105,7 +105,7 @@ THREE.ArUtils.createArContextWithImage = function(url, debugDetectEnabled, onRea
 	return srcElement
 }
 
-THREE.ArUtils.createArContextWithWebcam = function(debugDetectEnabled, onReady){
+THREE.ArUtils.setupArContextWithWebcam = function(debugDetectEnabled, onReady){
 	navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
 	var srcElement = document.createElement('video');

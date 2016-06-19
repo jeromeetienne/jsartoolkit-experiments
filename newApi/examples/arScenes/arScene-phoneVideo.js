@@ -6,7 +6,7 @@ var arScenes = arScenes || {}
 arScenes['phoneVideo'] = {
 	setupArContext : function(debugDetectEnabled, onArContextReady){
 		var url = '../../videos/output_4.mp4';
-		var srcElement = THREE.ArUtils.createArContextWithVideo(url, debugDetectEnabled, function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithVideo(url, debugDetectEnabled, function(arContext){
 			onArContextReady(arContext)
 		})
 		return srcElement		

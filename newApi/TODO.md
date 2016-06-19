@@ -1,15 +1,11 @@
 # TODO before release
 - intrument the demo
   - enable/disable text output of the found markerInfo
-- three.armultimarker should inherit from three.armarker
-  - same for prediction
-- rename createArContextWithImage to setupArContextWithImage
 - clean up artoolkit.context contructor parameters
   - close to the source init
   - crappy verbose parameters, hardcoded url
 - stats.js report seems buggy and not measure the time spend rendering or detecting
 - fix the aspect issue, this is WAY long due
-- there is the debugDetectEnabled which is hardcoded 
 - write a good basic.html
   - have the function for demo.html ready - all the scene build
   - once basic.html is ready, split the 2 files

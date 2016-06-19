@@ -9,7 +9,7 @@
 <script src="../three.artoolkitutils.js"></script>
 <script src="../three.armarker.js"></script>
 <script src="../three.armarkerprediction.js"></script>
-<script src="../three.armultimarker.js"></script>
+<script src="../three.ArMarkerMulti.js"></script>
 <style>
 	body {
 		margin : 0px;
@@ -69,7 +69,7 @@
 
 	if( optionPresentInHash('webcam') === true ){
 		var sourceType = 'webcam'
-		var srcElement = THREE.ArUtils.createArContextWithWebcam(function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithWebcam(function(arContext){
 			onArContextReady(arContext)
 		})
 		document.body.appendChild(srcElement)
@@ -81,7 +81,7 @@
 		// var url = '../../images/kuva.jpg'
 		// var url = '../../images/img.jpg'
 		var url = '../../images/marker_cube_hamming63.png'
-		var srcElement = THREE.ArUtils.createArContextWithImage(url, function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithImage(url, function(arContext){
 			onArContextReady(arContext)
 		})
 		document.body.appendChild(srcElement)
@@ -92,7 +92,7 @@
 		var url = '../../videos/VID_20160503_165602-640x480.mp4'
 		// var url = '../../videos/headtracking.mp4'
 		// var url = '../../videos/me-marker-cube.mp4'
-		var srcElement = THREE.ArUtils.createArContextWithVideo(url, function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithVideo(url, function(arContext){
 			onArContextReady(arContext)
 		})
 		srcElement.playbackRate = 0.5
@@ -239,7 +239,7 @@
 	// markerRight.originObject.position.x = -3.3
 	// markerRight.originObject.position.y = -0.2
 	
-	// var multiMarker = new THREE.ArMultiMarker()
+	// var multiMarker = new THREE.ArMarkerMulti()
 	// multiMarker.arMarkers = arMarkers
 	// multiMarker.originObject.rotateX(-Math.PI/2)
 	// multiMarker.originObject.position.y = 5 
