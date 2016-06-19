@@ -5,9 +5,9 @@ var arScenes = arScenes || {}
 //////////////////////////////////////////////////////////////////////////////
 
 arScenes['roomspaceVideo'] = {
-	setupArContext : function(debugDetectEnabled, onArContextReady){
+	setupArContext : function(arContextOpts, onArContextReady){
 		var url = '../../videos/VID_20160503_165602-640x480.mp4'
-		var srcElement = THREE.ArUtils.setupArContextWithVideo(url, debugDetectEnabled, function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithVideo(url, arContextOpts, function(arContext){
 			onArContextReady(arContext)
 		})
 		return srcElement		

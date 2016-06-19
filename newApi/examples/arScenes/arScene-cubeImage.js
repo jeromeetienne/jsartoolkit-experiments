@@ -8,10 +8,10 @@ arScenes['cubeImage'] = {
 	/**
 	 * setup arContext and srcElement
 	 */
-	setupArContext : function(debugDetectEnabled, onArContextReady){
+	setupArContext : function(arContextOpts, onArContextReady){
 		var type = 'image'
 		var url = '../../images/marker_cube_hamming63.png'
-		var srcElement = THREE.ArUtils.setupArContextWithImage(url, debugDetectEnabled, function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithImage(url, arContextOpts, function(arContext){
 			onArContextReady(arContext)
 		})
 		return srcElement		

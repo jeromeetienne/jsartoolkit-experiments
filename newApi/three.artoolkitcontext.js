@@ -1,22 +1,27 @@
 
-THREE.ArtoolkitContext = function(width, height, debugEnabled, onReady){
+THREE.ArtoolkitContext = function(options, onReady){
 	var _this = this
 
-	this.controller = null
-	this.debugEnabled = debugEnabled
-	this.ready = false
+	// parse options
+	this.debugEnabled = options.debugEnabled !== undefined ? options.debugEnabled : false
+	console.assert(options.width !== undefined)
+	console.assert(options.height !== undefined)
 
+	// set some states
+	this.controller = null
+	this.ready = false
 	this.detectionDate = null
 
-	// TODO put that in a function init
-	var cameraParamsUrl = '../../data/camera_para.dat'
+	// load camera parameters
+	var cameraParamsUrl = options.cameraParamsUrl !== undefined ? options.cameraParamsUrl : '../../data/camera_para.dat'
 	var cameraParameters = new ARCameraParam(cameraParamsUrl, function() {
-	
-		_this.controller = new ARController(width, height, cameraParameters);
+		
+		_this.controller = new ARController(options.width, options.height, cameraParameters);
 		if( _this.debugEnabled  )	_this.controller.debugSetup();
 
+		// honor arContext.ready
 		_this.ready = true
-
+		// notify the callback
 		onReady && onReady(_this)	
 	})
 }

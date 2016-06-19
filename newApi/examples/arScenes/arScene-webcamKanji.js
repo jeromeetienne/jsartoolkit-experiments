@@ -5,8 +5,8 @@ var arScenes = arScenes || {}
 //////////////////////////////////////////////////////////////////////////////
 
 arScenes['webcamKanji'] = {
-	setupArContext : function(debugDetectEnabled, onArContextReady){
-		var srcElement = THREE.ArUtils.setupArContextWithWebcam(debugDetectEnabled, function(arContext){
+	setupArContext : function(arContextOpts, onArContextReady){
+		var srcElement = THREE.ArUtils.setupArContextWithWebcam(arContextOpts, function(arContext){
 			onArContextReady(arContext)
 		})
 		return srcElement		

@@ -49,7 +49,7 @@ THREE.ArUtils.buildDebugArMarker = function (markerInfoId) {
 
 
 
-THREE.ArUtils.setupArContextWithVideo = function(url, debugDetectEnabled, onReady){
+THREE.ArUtils.setupArContextWithVideo = function(url, arContextOpts, onReady){
 	var srcElement = document.createElement('video');
 	srcElement.src = url
 	srcElement.autoplay = true;
@@ -62,7 +62,11 @@ THREE.ArUtils.setupArContextWithVideo = function(url, debugDetectEnabled, onRead
 	setTimeout(function(){
 		var width = srcElement.width
 		var height = srcElement.height
-		var arContext = new THREE.ArtoolkitContext(width, height, debugDetectEnabled, function(){
+		var arContext = new THREE.ArtoolkitContext({
+			width: width,
+			height: height,
+			debugEnabled: arContextOpts.debugEnabled
+		}, function(){
 			onReady && onReady(arContext)
 		})
 	}, 0)
@@ -75,7 +79,7 @@ THREE.ArUtils.setupArContextWithVideo = function(url, debugDetectEnabled, onRead
 //		Code Separator
 //////////////////////////////////////////////////////////////////////////////
 
-THREE.ArUtils.setupArContextWithImage = function(url, debugDetectEnabled, onReady){
+THREE.ArUtils.setupArContextWithImage = function(url, arContextOpts, onReady){
 	var srcElement = document.createElement('img')
 	srcElement.src = url
 	srcElement.width = 640
@@ -84,14 +88,18 @@ THREE.ArUtils.setupArContextWithImage = function(url, debugDetectEnabled, onRead
 	setTimeout(function(){
 		var width = srcElement.width
 		var height = srcElement.height
-		var arContext = new THREE.ArtoolkitContext(width, height, debugDetectEnabled, function(){
+		var arContext = new THREE.ArtoolkitContext({
+			width: width,
+			height: height,
+			debugEnabled: arContextOpts.debugEnabled
+		}, function(){
 			onReady && onReady(arContext)
 		})
 	}, 0)
 	return srcElement
 }
 
-THREE.ArUtils.setupArContextWithWebcam = function(debugDetectEnabled, onReady){
+THREE.ArUtils.setupArContextWithWebcam = function(arContextOpts, onReady){
 	navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
 	var srcElement = document.createElement('video');
@@ -134,7 +142,11 @@ THREE.ArUtils.setupArContextWithWebcam = function(debugDetectEnabled, onReady){
 
 				var width = srcElement.videoWidth
 				var height = srcElement.videoHeight
-				var arContext = new THREE.ArtoolkitContext(width, height, debugDetectEnabled, function(){
+				var arContext = new THREE.ArtoolkitContext({
+					width: width,
+					height: height,
+					debugEnabled: arContextOpts.debugEnabled
+				}, function(){
 					onReady && onReady(arContext)
 				})
 			}, 1000/100);

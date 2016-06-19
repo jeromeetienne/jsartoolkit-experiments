@@ -5,9 +5,9 @@ var arScenes = arScenes || {}
 //////////////////////////////////////////////////////////////////////////////
 
 arScenes['headtrackingVideo'] = {
-	setupArContext : function(debugDetectEnabled, onArContextReady){
+	setupArContext : function(arContextOpts, onArContextReady){
 		var url = '../../videos/headtracking.mp4'
-		var srcElement = THREE.ArUtils.setupArContextWithVideo(url, debugDetectEnabled, function(arContext){
+		var srcElement = THREE.ArUtils.setupArContextWithVideo(url, arContextOpts, function(arContext){
 			onArContextReady(arContext)
 		})
 		return srcElement		

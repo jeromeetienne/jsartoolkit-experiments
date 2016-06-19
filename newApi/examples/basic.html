@@ -214,7 +214,10 @@
 	//		Code Separator
 	//////////////////////////////////////////////////////////////////////////////
 	var arContext = null
-	var srcElement = currentArScene.setupArContext(urlParameters.debugDetectEnabled, function(arContextNew){
+	var arContextOpts = {
+		debugEnabled : urlParameters.debugDetectEnabled
+	}
+	var srcElement = currentArScene.setupArContext(arContextOpts, function(arContextNew){
 		arContext = arContextNew
 
 		console.assert(arContext.ready === true)
